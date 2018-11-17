@@ -259,18 +259,19 @@ COC.Validate.Start = (...args) => {
   }
   return { errors: errs, valid: true }
 }
-COC.MigaNumber = num => {
-  if (num / 10000000 > 1) {
-    return `${window.TrimExtraZeros((num / 10000000).toFixed(2))}M`
-  }
-  if (num / 1000 > 1) {
-    return `${window.TrimExtraZeros((num / 1000).toFixed(1))}K`
-  }
-  return num
-}
 COC.TrimExtraZeros = num => (num % 1 === 0 ? parseInt(num) : num);  // eslint-disable-line
 COC.GetRange = (num, min, max) => Math.min(max, Math.max(num, min))
 COC.InRange = (num, min, max) => num >= min && num <= max
+
+COC.MigaNumber = num => {
+  if (num / 10000000 > 1) {
+    return `${COC.TrimExtraZeros((num / 10000000).toFixed(2))}M`
+  }
+  if (num / 1000 > 1) {
+    return `${COC.TrimExtraZeros((num / 1000).toFixed(1))}K`
+  }
+  return num
+}
 
 COC.NextCircularIndex = (index, arr) =>
   index === arr.length - 1 ? 0 : index + 1
