@@ -1,8 +1,7 @@
 import COC from './modules/main.js'
-export default ({ env }, inject) => {
+import Vue from 'vue'
+export default () => {
   // Init COC
   COC.Init()
-  // Add env to App
-  COC.ConfigApp(new COC.Objects(COC.App).MixAndCreate(env).get)
-  inject('coc', COC)
+  Vue.prototype.$coc = COC;
 }

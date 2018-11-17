@@ -1,0 +1,29 @@
+.restaurant-card .ivu-card-body{
+  padding: 0 !important;
+}
+@media only screen and (min-width: 993px) {
+  .login-dialog .Modal{
+  width: 60% !important;
+}
+}
+
+@media only screen and (max-width: 992px) {
+  .login-dialog .Modal{
+  width: 90% !important;
+}
+}
+.ivu-badge-count{
+  margin-right: 2px;
+  margin-top: 7px;
+  font-family: sans-serif;
+}
+.no-badge.badge-item .Badge__content{
+  display: none;
+}
+
+
+#main-search-box input{
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border: 1px solid red;
+}

@@ -17,11 +17,13 @@ $directions: "top" "bottom" "right" "left";
 
 @for $i from 0 through 3{
 	.coc-border-#{$i}{
-	 	border: #{$i}px solid !important;
+	 	border-width: #{$i}px !important;
+	 	border-style: solid;
 	}
  @each $dir in $directions{
  	.coc-border-#{$dir}-#{$i}{
-	 	border-#{$dir}: #{$i}px solid !important;
+	 	border-#{$dir}-width: #{$i}px !important;
+	 	border-style: solid;
 	 }
  }
 }

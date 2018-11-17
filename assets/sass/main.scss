@@ -1,25 +1,12 @@
-@import "../css/colors.css";
 @import "../css/grid.css";
-@import "../css/waves.css";
 @import "../css/borders.css";
 @import "../css/typography.css";
 @import "../css/shadows.css";
-@import "../css/nav.css";
-@import "../css/coc.css";
-// Bulma Buttons
-@import "../css/bulma-buttons.css";
-// AnimateCSS
 @import "../css/animate.css";
-// ICONS
-@import "../icons/material/style.css";
-@import "../icons/brands/style.css";
-@import "../icons/knocksapp/style.css";
-// ICONS optional icons
-@import "../icons/elegant/style.css";
-@import "../icons/linecons/style.css";
+
 
 //Main Theme
-@import "themes/master.scss";
+@import "themes/master/master.scss";
 
 //Bounds
 @import "bounds/padding.scss";
