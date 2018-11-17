@@ -7,4 +7,6 @@ COC.Arrays = Arrays
 COC.Objects = Objects
 COC.$ = $
 COC.Init = Init
+import Vue from 'vue';
+Vue.prototype.$coc = COC;
 export default COC
