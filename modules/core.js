@@ -1,4 +1,3 @@
-import pkg from '~/package'
 const COC = {}
 
 // Loggers =====================================================
@@ -279,13 +278,7 @@ COC.CircularSubtract = (slave, master, round) =>
   slave > master ? round - slave + master : master - slave
 
 // App Instance
-COC.App = {
-  name: pkg.name,
-  version: pkg.version,
-  author: pkg.author,
-  description: pkg.description,
-  repository: pkg.repository
-}
+COC.App = {};
 COC.ConfigApp = options => {
   COC.App = options
   if (COC.App && COC.App.mode) {
