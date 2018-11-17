@@ -278,21 +278,21 @@ COC.CircularSubtract = (slave, master, round) =>
   slave > master ? round - slave + master : master - slave
 
 // App Instance
-COC.App = {};
+COC.App = {}
 COC.ConfigApp = options => {
   COC.App = options
   if (COC.App && COC.App.mode) {
     COC.Mode = COC.App.mode
-    if (COC.Mode !== 'production') {
-      console.log(
-        '%cCOC',
-        'color: #e91e63; font-size: 80px; font-family: monospace;'
-      )
-      console.log(
-        '%cdevelopment mode',
-        'color: #e91e63; font-size: 25px; font-family: monospace;'
-      )
-    }
+  }
+  if (!COC.Mode || !COC.Mode !== 'production') {
+    console.log(
+      '%cCOC',
+      'color: #e91e63; font-size: 80px; font-family: monospace;'
+    )
+    console.log(
+      '%cdevelopment mode',
+      'color: #e91e63; font-size: 25px; font-family: monospace;'
+    )
   }
 }
 
