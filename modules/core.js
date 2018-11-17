@@ -283,7 +283,7 @@ COC.ConfigApp = options => {
   COC.App = options
   if (COC.App && COC.App.mode) {
     COC.Mode = COC.App.mode
-    if (COC.Mode === 'development') {
+    if (COC.Mode !== 'production') {
       console.log(
         '%cCOC',
         'color: #e91e63; font-size: 80px; font-family: monospace;'
