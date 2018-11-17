@@ -1,7 +1,7 @@
-var webpack = require('webpack')
-var path = require('path')
-var VueLoaderPlugin = require('vue-loader/lib/plugin')
-var MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const webpack = require('webpack')
+const path = require('path')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = {
 	entry : './src/index.js' , 
 	mode : 'development' ,
