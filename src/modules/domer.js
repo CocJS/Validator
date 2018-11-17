@@ -57,6 +57,8 @@ export default class $ {
       console.log('ITS NULL')
       return
     }
-    window.scrollTo(0, this.domer.offsetTop)
+    if(process.browser){
+window.scrollTo(0, this.domer.offsetTop)
+    }
   }
 }
