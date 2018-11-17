@@ -1,6 +1,6 @@
 {
   "name": "coc-nuxt-iview",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "coc engine based implementation for nuxt-iview applications",
   "main": "index.js",
   "scripts": {
