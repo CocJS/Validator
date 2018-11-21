@@ -1,13 +1,14 @@
+const pkg = require('./package.json')
 const webpack = require('webpack')
 const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = {
   entry: './src/index.js',
-  mode: 'production',
+  mode: 'development',
   output: {
-    path: path.resolve(__dirname, './'),
-    filename: 'index.js'
+    path: path.resolve(__dirname, './dist/'),
+    filename: `${pkg.name}.js`
   },
   module: {
     rules: [
@@ -51,5 +52,6 @@ module.exports = {
       chunkFilename: '[id].css'
     }),
     new VueLoaderPlugin()
-  ]
+  ],
+  target: 'node'
 }

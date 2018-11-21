@@ -56,13 +56,6 @@ COC.DevInfoLog = options => {
 // Loggers Ends ===============================================
 
 COC.isNumber = value => !Number.isNaN(value)
-if (process.browser) {
-  COC.Origin = `${window.location.origin}/`
-  COC.Asset = url => COC.Origin + url
-  COC.AssetUp = url => window.location.href + url
-  COC.AssetFrom = (origin, url) => origin + url
-}
-
 // Arrays Core ================================================
 
 //Matching
@@ -200,6 +193,7 @@ COC.Swap = (arrs, i, j) => {
   const temp = arr[i]
   arr[i] = arr[j]
   arr[j] = temp
+  return arr
 }
 
 COC.HasValue = val => {
