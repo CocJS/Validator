@@ -7,15 +7,18 @@ module.exports = {
   entry: './src/index.js',
   mode: 'production',
   output: {
-    path: path.resolve(__dirname, './dist/'),
-    filename: `${pkg.name}.js`
+    path: path.resolve(__dirname, './'),
+    filename: `index.js`
   },
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        options: {
+            "presets": [["es2015", {"modules": false}]]
+          }
       },
       {
         test: /\.vue$/,
@@ -53,5 +56,4 @@ module.exports = {
     }),
     new VueLoaderPlugin()
   ],
-  target: 'node'
 }
