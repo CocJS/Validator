@@ -13,7 +13,10 @@
     "type": "git",
     "url": "git+https://github.com/CocJS/Nuxt-iView-plugin.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "uglifyjs-webpack-plugin": "^2.0.1"
+  },
   "keywords": [
     "coc",
     "cocjs",

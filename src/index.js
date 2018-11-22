@@ -19,7 +19,7 @@ import CocForm from './components/Forms/CocForm.vue'
 import CocAxios from './components/Assistants/CocAxios.vue'
 import CocCollapse from './components/Assistants/CocCollapse.vue'
 import CocShowKeys from './components/Assistants/CocShowKeys.vue'
-import './assets/sass/main.scss'
+import './assets/sass/index.scss'
 
 COC.Init = () => {
   Vue.component('coc-input', CocInput)
