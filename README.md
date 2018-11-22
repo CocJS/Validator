@@ -17,19 +17,17 @@ npm install coc-nuxt-iview
 After installing from npm, create `coc.js` file in `/plugins` directory.
 in `coc.js` add the following
 
-
     import COC from 'coc-nuxt-iview'
     import moment from 'moment'
     import lodash from 'lodash'
     import pkg from '~/package'
     import Vue from 'vue'
-    export default ({ env }) => {
+    export default ({ env }, inject) => {
       // Init COC
       COC.Init({
         Vue,
         lodash,
-        moment,
-        COC
+        moment
       })
       // Config app data
       COC.ConfigApp({
@@ -38,6 +36,7 @@ in `coc.js` add the following
         repository: pkg.repository,
         mode: env.mode
       })
+      inject('coc', COC)
     }
 
 Then you can add the default COC theme by adding
@@ -139,4 +138,5 @@ COC is using different components from many UI libraries to cover most of the UI
               ]
             }
         ]"/>
+
 
