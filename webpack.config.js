@@ -5,14 +5,15 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = {
   entry: './src/index.js',
-  mode: 'production',
+  mode: 'development',
   output: {
-    path: path.resolve(__dirname, ''),
+    path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
     libraryTarget: 'umd',
     library: `${pkg.name}`,
     umdNamedDefine: true,
-    globalObject: 'this'
+    globalObject: 'this',
+    publicPath: '/dist',
 },
   module: {
     rules: [
