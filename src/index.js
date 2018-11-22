@@ -35,7 +35,7 @@ COC.Init = () => {
     CocShowKeys,
   }
   Object.keys(components).forEach(key => {
-          Vue.component(key, iview[key])
+          Vue.component(key, components[key])
   })
 }
 export default COC
