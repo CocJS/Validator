@@ -22,7 +22,7 @@ import './assets/sass/index.scss'
 
 COC.Init = (options) => {
   const Vue = options.Vue;
-  const axios = options.axios;
+  const lodash = options.lodash;
   const moment = options.moment;
   const components = {
     CocInput,
@@ -40,6 +40,6 @@ COC.Init = (options) => {
           Vue.component(key, components[key])
   })
   Vue.prototype.$moment = moment;
-  Vue.prototype.$axios = axios;
+  Vue.prototype.$_ = lodash;
 }
 export default COC
