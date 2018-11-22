@@ -199,7 +199,7 @@ export default {
       this.emit('close')
     },
     scroll() {
-      if (!process.browser) return
+      if (typeof window !== 'undefined' || typeof document !== undefined) return
       this.isFired = true
       this.open()
       setTimeout(() => {

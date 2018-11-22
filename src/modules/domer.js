@@ -1,7 +1,7 @@
 import COC from './core.js'
 export default class $ {
   constructor(dom) {
-    if (process.browser) {
+    if (typeof window !== 'undefined' || typeof document !== undefined) {
       this.domer = typeof dom === 'string' ? document.querySelector(dom) : dom
     }
   }
@@ -57,7 +57,7 @@ export default class $ {
       console.log('ITS NULL')
       return
     }
-    if (process.browser) {
+    if (typeof window !== 'undefined' || typeof document !== undefined) {
       window.scrollTo(0, this.domer.offsetTop)
     }
   }
