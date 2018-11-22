@@ -7,9 +7,13 @@ module.exports = {
   entry: './src/index.js',
   mode: 'production',
   output: {
-    path: path.resolve(__dirname, './'),
-    filename: `index.js`
-  },
+    path: path.resolve(__dirname, 'umd'),
+    filename: `${pkg.name}.js`,
+    libraryTarget: 'umd',
+    library: 'lib',
+    umdNamedDefine: true,
+    globalObject: 'this'
+},
   module: {
     rules: [
       {
