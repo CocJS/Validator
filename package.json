@@ -1,6 +1,6 @@
 {
   "name": "coc-nuxt-iview",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "coc engine based implementation for nuxt-iview applications",
   "main": "index.js",
   "scripts": {
@@ -13,8 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/CocJS/Nuxt-iView-plugin.git"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "keywords": [
     "coc",
     "cocjs",
