@@ -1,12 +1,12 @@
-import COC from './modules/core.js'
+import coc from './modules/core.js'
 import Arrays from './modules/arrays.js'
 import Objects from './modules/objects.js'
 import $ from './modules/domer.js'
-COC.Arrays = Arrays
-COC.Objects = Objects
-COC.$ = $
+coc.Arrays = Arrays
+coc.Objects = Objects
+coc.$ = $
 
-// COC VUE
+// coc.VUE
 // MASTER COMPONENTS
 import CocInput from './components/Forms/CocInput.vue'
 import CocSelect from './components/Forms/CocSelect.vue'
@@ -20,10 +20,11 @@ import CocCollapse from './components/Assistants/CocCollapse.vue'
 import CocShowKeys from './components/Assistants/CocShowKeys.vue'
 import './assets/sass/index.scss'
 
-COC.Init = (options) => {
+coc.Init = (options) => {
   const Vue = options.Vue;
   const lodash = options.lodash;
   const moment = options.moment;
+  const COC = options.COC;
   const components = {
     CocInput,
     CocSelect,
@@ -41,5 +42,6 @@ COC.Init = (options) => {
   })
   Vue.prototype.$moment = moment;
   Vue.prototype.$_ = lodash;
+  Vue.prototype.$coc = COC;
 }
-export default COC
+export default coc

@@ -203,7 +203,7 @@ export default {
         } else {
           $nuxt.$coc.DevWarn({ // eslint-disable-line
             component: 'Coc Button',
-            message:
+            content:
               'The controller (' +
               payloads.controller +
               ') that you`re trying to access is not exist.'
@@ -272,7 +272,7 @@ export default {
       if (type === 'success') {
         this.$Notice.success({
           title: message.title === undefined ? 'Whoops!' : message.title,
-          message:
+          content:
             message.body === undefined
               ? 'There`re some messing fields.'
               : message.body
@@ -280,7 +280,7 @@ export default {
       } else {
         this.$Notice.error({
           title: message.title === undefined ? 'Whoops!' : message.title,
-          message:
+          content:
             message.body === undefined
               ? 'There`re some messing fields.'
               : message.body
