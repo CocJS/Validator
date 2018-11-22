@@ -18,12 +18,15 @@ import CocForm from './components/Forms/CocForm.vue'
 import CocAxios from './components/Assistants/CocAxios.vue'
 import CocCollapse from './components/Assistants/CocCollapse.vue'
 import CocShowKeys from './components/Assistants/CocShowKeys.vue'
+import CocMainMaster from './components/Layouts/Masters/CocMainMaster.vue'
+import CocMasterFooter from './components/Layouts/Partials/CocMasterFooter.vue'
+import CocMasterNav from './components/Layouts/Partials/CocMasterNav.vue'
 import './assets/sass/index.scss'
 
-COC.Init = (options) => {
-  const Vue = options.Vue;
-  const lodash = options.lodash;
-  const moment = options.moment;
+COC.Init = options => {
+  const Vue = options.Vue
+  const lodash = options.lodash
+  const moment = options.moment
   const components = {
     CocInput,
     CocSelect,
@@ -35,11 +38,14 @@ COC.Init = (options) => {
     CocAxios,
     CocCollapse,
     CocShowKeys,
+    CocMainMaster,
+    CocMasterFooter,
+    CocMasterNav
   }
   Object.keys(components).forEach(key => {
-          Vue.component(key, components[key])
+    Vue.component(key, components[key])
   })
-  Vue.prototype.$moment = moment;
-  Vue.prototype.$_ = lodash;
+  Vue.prototype.$moment = moment
+  Vue.prototype.$_ = lodash
 }
 export default COC

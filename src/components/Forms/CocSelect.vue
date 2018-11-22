@@ -60,7 +60,7 @@
             :value = "hashOption(child).value"
             :label = "hashOption(child).label">
             <span>
-              <span :class = "[ icon_align , 'margin-10px' , hashOption(child).icon ]"/>
+              <span :class = "[ icon_align , '' , hashOption(child).icon ]"/>
               <span class = "coc_px_side_padding">{{ hashOption(child).label }}</span>
               <span v-if = "hashOption(child).comment">
                 <small 
@@ -685,6 +685,12 @@ export default {
         $nuxt.$emit('COCFormMeta', {
           scope: this.scope,
           meta: arguments[0],
+          auth: {
+            placeholder: this.placeholder,
+            domId: this.componentId,
+            type: 'select',
+            val: this.input
+          },
           credentials: this.model.meta
         })
         return
@@ -692,6 +698,12 @@ export default {
       if (this.model.meta[arguments[0]] === undefined) {
         $nuxt.$coc.DevWarn({ // eslint-disable-line
           component: 'Coc Select',
+          auth: {
+            placeholder: this.placeholder,
+            domId: this.componentId,
+            type: 'select',
+            val: this.input
+          },
           message:
             'The meta that you are requesting is not available in this CSMA.'
         })

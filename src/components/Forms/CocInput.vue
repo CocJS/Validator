@@ -474,7 +474,7 @@ export default {
       return this.model.control
     },
     select() {
-      new $nuxt.$coc.$(this.jQueryComponentId).focus().select(); //eslint-disable-line
+      new this.$coc.$(`${this.jQueryComponentId} input`).domer.select(); //eslint-disable-line
       //Check and Call the aruguments callback
       if (typeof arguments[arguments.length - 1] == 'function') {
         arguments[arguments.length - 1]()
@@ -482,22 +482,23 @@ export default {
       return this.model.control
     },
     copy() {
+      const vm = this
       if (!$nuxt.$coc.HasValue(this.input)) { //eslint-disable-line
-        this.$message({
+        vm.$Message.error({
           showClose: true,
-          message: 'There`s no content to be copied in this field.',
+          content: 'There`s no content to be copied in this field.',
           type: 'error'
         })
         return this.model.control
       }
-      let copyText = document.getElementById(this.componentId)
+      let copyText = new this.$coc.$(`${this.jQueryComponentId} input`).domer
+      console.log(copyText)
       copyText.select()
       document.execCommand('copy')
-      const vm = this
       if (this.notifi_copy)
-        this.$message({
+        vm.$Message.success({
           showClose: true,
-          message: vm.copy_message,
+          content: vm.copy_message,
           type: 'success'
         })
       this.blur()
@@ -575,6 +576,12 @@ export default {
       $nuxt.$emit('COCFormMeta', {
         scope: this.scope,
         meta: arguments[0],
+        auth: {
+          placeholder: this.placeholder,
+          domId: this.componentId,
+          type: 'input',
+          val: this.input
+        },
         credentials: this.model.meta[arguments[0]]
       })
       return this.model.control

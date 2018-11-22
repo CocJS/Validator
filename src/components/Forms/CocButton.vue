@@ -14,12 +14,14 @@
       @catch = "handleCatch($event)"/>
     <Button
       :type = "type"
-      :plain = "plain"
-      :circle = "circle"
+      :ghost = "plain"
+      :shape = "circle ? 'circle': null"
       :round = "round"
+      :loading = "isLoading"
       :class = "classes"
       :icon = "icon"
       :size = "size"
+      v-bind = "bind"
       :disabled = "disabled"
       @click = "construct()"><template v-if = "placeholder && placeholder.length">{{ placeholder }}</template></Button>
   </div>
@@ -30,7 +32,7 @@ export default {
   props: {
     submit_at: {
       type: String,
-      default: null
+      default: 'foo'
     },
     xdata: {
       type: Object,
@@ -102,6 +104,10 @@ export default {
     },
     success_at: {
       type: Array,
+      default: null
+    },
+    bind: {
+      type: Object,
       default: null
     },
     success_msg: {
@@ -202,8 +208,8 @@ export default {
           )
         } else {
           $nuxt.$coc.DevWarn({ // eslint-disable-line
-            component: 'Coc Button',
-            content:
+            message: 'Coc Button',
+            desc:
               'The controller (' +
               payloads.controller +
               ') that you`re trying to access is not exist.'
@@ -272,7 +278,7 @@ export default {
       if (type === 'success') {
         this.$Notice.success({
           title: message.title === undefined ? 'Whoops!' : message.title,
-          content:
+          desc:
             message.body === undefined
               ? 'There`re some messing fields.'
               : message.body
@@ -280,7 +286,7 @@ export default {
       } else {
         this.$Notice.error({
           title: message.title === undefined ? 'Whoops!' : message.title,
-          content:
+          desc:
             message.body === undefined
               ? 'There`re some messing fields.'
               : message.body
@@ -323,27 +329,35 @@ export default {
     },
     handleCatch(e) {
       this.networkErrors = e.errors
+      console.log(e)
       let msg = ''
-      if (e.errors.status == 404) {
-        msg =
-          "Whoops, Seems like you're lost, try to refresh your page, otherwise kindly report us about it so we can fix it."
-      }
+      if (e && e.errors && e.errors.response) {
+        if (e.errors.response.status == 404) {
+          msg =
+            "Whoops, Seems like you're lost, try to refresh your page, otherwise kindly report us about it so we can fix it."
+        }
 
-      if (e.errors.status == 500) {
-        msg =
-          'Whoops, Seems like something went wrong, try to refresh your page, otherwise kindly report us about it so we can fix it.'
-      }
+        if (e.errors.response.status == 500) {
+          msg =
+            'Whoops, Seems like something went wrong, try to refresh your page, otherwise kindly report us about it so we can fix it.'
+        }
 
-      if (e.errors.status == 402) {
-        msg =
-          'Some fields are not completed, please complete them first and try again.'
-      }
+        if (e.errors.response.status == 402) {
+          msg =
+            'Some fields are not completed, please complete them first and try again.'
+        }
 
-      if (e.errors.status == 401) {
-        msg =
-          'Whoops, Your session has expired, please refresh your page and try again.'
+        if (e.errors.response.status == 401) {
+          msg =
+            'Whoops, Your session has expired, please refresh your page and try again.'
+        }
+      } else if (e && e.errors && !e.errors.response && e.errors.message) {
+        msg = e.errors.message
       }
-      this.notifi({ title: 'Whoops!', body: msg })
+      this.notifi({
+        title: 'Whoops!',
+        body: msg.length ? msg : 'Something went wrong,  please try again'
+      })
     },
     emit() {
       this.$emit('input', this.model)
