@@ -2,7 +2,7 @@
   "name": "coc-nuxt-iview",
   "version": "3.2.1-beta.0",
   "description": "coc engine based implementation for nuxt-iview applications",
-  "main": "dist/index.js",
+  "main": "dist/coc-nuxt-iview.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --config webpack.config.js",

@@ -10,7 +10,7 @@ module.exports = {
   mode: 'production',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
+    filename: `${pkg.name}.js`,
     libraryTarget: 'umd',
     library: `${pkg.name}`,
     umdNamedDefine: true,
