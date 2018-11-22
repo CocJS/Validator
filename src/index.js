@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import COC from './modules/core.js'
 import Arrays from './modules/arrays.js'
 import Objects from './modules/objects.js'
@@ -21,7 +20,10 @@ import CocCollapse from './components/Assistants/CocCollapse.vue'
 import CocShowKeys from './components/Assistants/CocShowKeys.vue'
 import './assets/sass/index.scss'
 
-COC.Init = () => {
+COC.Init = (options) => {
+  const Vue = options.Vue;
+  const axios = options.axios;
+  const moment = options.moment;
   const components = {
     CocInput,
     CocSelect,
@@ -37,5 +39,7 @@ COC.Init = () => {
   Object.keys(components).forEach(key => {
           Vue.component(key, components[key])
   })
+  Vue.prototype.$moment = moment;
+  Vue.prototype.$axios = axios;
 }
 export default COC
