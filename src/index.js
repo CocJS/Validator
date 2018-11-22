@@ -22,15 +22,20 @@ import CocShowKeys from './components/Assistants/CocShowKeys.vue'
 import './assets/sass/index.scss'
 
 COC.Init = () => {
-  Vue.component('coc-input', CocInput)
-  Vue.component('coc-select', CocSelect)
-  Vue.component('coc-radio', CocRadio)
-  Vue.component('coc-date', CocDate)
-  Vue.component('coc-button', CocButton)
-  Vue.component('coc-form-item', CocFormItem)
-  Vue.component('coc-form', CocForm)
-  Vue.component('coc-axios', CocAxios)
-  Vue.component('coc-collapse', CocCollapse)
-  Vue.component('coc-show-keys', CocShowKeys)
+  const components = {
+    CocInput,
+    CocSelect,
+    CocRadio,
+    CocDate,
+    CocButton,
+    CocFormItem,
+    CocForm,
+    CocAxios,
+    CocCollapse,
+    CocShowKeys,
+  }
+  Object.keys(components).forEach(key => {
+          Vue.component(key, iview[key])
+  })
 }
 export default COC
