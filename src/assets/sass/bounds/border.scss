@@ -20,8 +20,16 @@ $directions: "top" "bottom" "right" "left";
 	 	border-width: #{$i}px !important;
 	 	border-style: solid;
 	}
+	%coc-border-#{$i}{
+	 	border-width: #{$i}px !important;
+	 	border-style: solid;
+	}
  @each $dir in $directions{
  	.coc-border-#{$dir}-#{$i}{
+	 	border-#{$dir}-width: #{$i}px !important;
+	 	border-style: solid;
+	 }
+	 %coc-border-#{$dir}-#{$i}{
 	 	border-#{$dir}-width: #{$i}px !important;
 	 	border-style: solid;
 	 }

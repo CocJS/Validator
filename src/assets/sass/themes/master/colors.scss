@@ -44,6 +44,97 @@
     %coc-#{$color}-box-shadow { 
         box-shadow: 0 0 0 2px $current-color;
     }
+    @for $i from 1 through 9{
+        //  Tints
+        .coc-#{$color}-tint-#{$i}-bg { 
+            background-color: tint($current-color, ($i * 10));
+        }
+        .coc-#{$color}-tint-#{$i}-text { 
+            color: tint($current-color, ($i * 10));
+        }
+        .coc-#{$color}-tint-#{$i}-border { 
+            border-color: tint($current-color, ($i * 10)) !important;
+        }
+        .coc-#{$color}-hover-tint-#{$i}-bg:hover { 
+            background-color: tint($current-color, ($i * 10));
+        }
+        .coc-#{$color}-hover-tint-#{$i}-text:hover { 
+            color: tint($current-color, ($i * 10));
+        }
+        .coc-#{$color}-hover-tint-#{$i}-border:hover { 
+            border-color: tint($current-color, ($i * 10));
+        }
+
+        // Extensions
+
+        %coc-#{$color}-tint-#{$i}-bg { 
+        background-color: tint($current-color, ($i * 10));
+        }
+        %coc-#{$color}-tint-#{$i}-text { 
+            color: tint($current-color, ($i * 10));
+        }
+        %coc-#{$color}-tint-#{$i}-border { 
+            border-color: tint($current-color, ($i * 10)) !important;
+        }
+        %coc-#{$color}-hover-tint-#{$i}-bg:hover { 
+            background-color: tint($current-color, ($i * 10));
+        }
+        %coc-#{$color}-hover-tint-#{$i}-text:hover { 
+            color: tint($current-color, ($i * 10));
+        }
+        %coc-#{$color}-hover-tint-#{$i}-border:hover { 
+            border-color: tint($current-color, ($i * 10)) !important;
+        }
+        %coc-#{$color}-box-tint-#{$i}-shadow { 
+            box-shadow: 0 0 0 2px tint($current-color, ($i * 10));
+        }
+
+
+
+        // Shads
+        .coc-#{$color}-shade-#{$i}-bg { 
+            background-color: shade($current-color, ($i * 10));
+        }
+        .coc-#{$color}-shade-#{$i}-text { 
+            color: shade($current-color, ($i * 10));
+        }
+        .coc-#{$color}-shade-#{$i}-border { 
+            border-color: shade($current-color, ($i * 10)) !important;
+        }
+        .coc-#{$color}-hover-shade-#{$i}-bg:hover { 
+            background-color: shade($current-color, ($i * 10));
+        }
+        .coc-#{$color}-hover-shade-#{$i}-text:hover { 
+            color: shade($current-color, ($i * 10));
+        }
+        .coc-#{$color}-hover-shade-#{$i}-border:hover { 
+            border-color: shade($current-color, ($i * 10));
+        }
+
+        // Extensions
+
+        %coc-#{$color}-shade-#{$i}-bg { 
+        background-color: shade($current-color, ($i * 10));
+        }
+        %coc-#{$color}-shade-#{$i}-text { 
+            color: shade($current-color, ($i * 10));
+        }
+        %coc-#{$color}-shade-#{$i}-border { 
+            border-color: shade($current-color, ($i * 10)) !important;
+        }
+        %coc-#{$color}-hover-shade-#{$i}-bg:hover { 
+            background-color: shade($current-color, ($i * 10));
+        }
+        %coc-#{$color}-hover-shade-#{$i}-text:hover { 
+            color: shade($current-color, ($i * 10));
+        }
+        %coc-#{$color}-hover-shade-#{$i}-border:hover { 
+            border-color: shade($current-color, ($i * 10)) !important;
+        }
+        %coc-#{$color}-box-shade-#{$i}-shadow { 
+            box-shadow: 0 0 0 2px shade($current-color, ($i * 10));
+        }
+   }
 }
 .transparent{
 	background-color: transparent;

@@ -35,9 +35,8 @@
       :disabled="disabled"
       :size = "size"
       v-model="input"
-      class = ""
+      :class = "[poperClass]"
       style = "width : 100%"
-      popper-class = "coc_elselect_popper"
       @focus = "innerEmit(`focus`); isFocused = true"
       @blur = "innerEmit(`blur`); isFocused = false"
       @clear = "innerEmit(`clear`)"
@@ -188,11 +187,11 @@ export default {
       type: Object,
       default: () => {
         return {
-          success: 'coc_input_success',
-          error: 'coc_input_error',
+          success: 'coc-input-success',
+          error: 'coc-input-error',
           focus: 'coc_input_focus',
-          regular: 'coc_input_regular',
-          init: 'coc_input_init'
+          regular: 'coc-input-regular',
+          init: 'coc-input-init'
         }
       }
     },
@@ -282,6 +281,19 @@ export default {
       result.suffix = this.icon_align == 'right' ? str : ''
       result.prefix = this.icon_align != 'right' ? str : ''
       return result
+    },
+    poperClass() {
+      if (!this.isFired) {
+        if (this.isFocused) {
+          return this.inputStatusMixins.focus
+        } else {
+          return this.inputStatusMixins.regular
+        }
+      } else if (this.isValid) {
+        return this.inputStatusMixins.success
+      } else {
+        return this.inputStatusMixins.error
+      }
     },
     componentId() {
       return 'coc_elinput_' + this._uid
@@ -410,7 +422,7 @@ export default {
       )
     },
     inputStatusMixins() {
-      return new $nuxt.$coc.Objects(this.input_status_classes).Mix( // eslint-disable-line
+      return new this.$coc.Objects(this.input_status_classes).Mix( // eslint-disable-line
         this.input_status_classes_mixins
       ).get
     },
@@ -455,10 +467,10 @@ export default {
     const vm = this
     this.initFeeds()
     //DOM EVENTS
-    new $nuxt.$coc.$(document).ready(function() { // eslint-disable-line
+    new this.$coc.$(document).ready(function() { // eslint-disable-line
       vm.realign()
 
-      // new $nuxt.$coc.$(vm.jQueryComponentId).keyup(function(e){ // eslint-disable-line
+      // new this.$coc.$(vm.jQueryComponentId).keyup(function(e){ // eslint-disable-line
       //   if(e.which === 13){
       //     vm.submit()
       //     return
@@ -500,8 +512,8 @@ export default {
     realign() {
       // if(this.multiple) return
       // if($nuxt.$coc.HasValue(this.input)) // eslint-disable-line
-      // new $nuxt.$coc.$('#'+this.componentId).css({ 'text-align' : $nuxt.$coc.TextAlignWeight(this.input).max , 'font-family' : $nuxt.$coc.FontsAlignment[$nuxt.$coc.TextAlignWeight( // eslint-disable-linethis.input).max] })
-      //   else new $nuxt.$coc.$('#'+this.componentId).css({ 'text-align' : $nuxt.$coc.LangAlignment  ,  'font-family' : $nuxt.$coc.FontsAlignment[$nuxt.$coc.LangAlignment] }) // eslint-disable-line
+      // new this.$coc.$('#'+this.componentId).css({ 'text-align' : $nuxt.$coc.TextAlignWeight(this.input).max , 'font-family' : $nuxt.$coc.FontsAlignment[$nuxt.$coc.TextAlignWeight( // eslint-disable-linethis.input).max] })
+      //   else new this.$coc.$('#'+this.componentId).css({ 'text-align' : $nuxt.$coc.LangAlignment  ,  'font-family' : $nuxt.$coc.FontsAlignment[$nuxt.$coc.LangAlignment] }) // eslint-disable-line
     },
     construct(options) {
       if (options.validate === undefined || options.validate == true)
@@ -583,7 +595,7 @@ export default {
       return this.model.control
     },
     focus() {
-      new $nuxt.$coc.$(this.jQueryComponentId).focus(); // eslint-disable-line
+      new this.$coc.$(this.jQueryComponentId).focus(); // eslint-disable-line
       //Check and Call the aruguments callback
       if (typeof arguments[arguments.length - 1] == 'function') {
         arguments[arguments.length - 1]()
@@ -591,14 +603,14 @@ export default {
       return this.model.control
     },
     blur() {
-      new $nuxt.$coc.$(this.jQueryComponentId).blur(); // eslint-disable-line
+      new this.$coc.$(this.jQueryComponentId).blur(); // eslint-disable-line
       //Check and Call the aruguments callback
       if (typeof arguments[arguments.length - 1] == 'function') {
         arguments[arguments.length - 1]()
       }
     },
     select() {
-      new $nuxt.$coc.$(this.jQueryComponentId).focus().select(); // eslint-disable-line
+      new this.$coc.$(this.jQueryComponentId).focus().select(); // eslint-disable-line
       //Check and Call the aruguments callback
       if (typeof arguments[arguments.length - 1] == 'function') {
         arguments[arguments.length - 1]()
@@ -634,41 +646,41 @@ export default {
     },
     watchMyDom() {
       if (
-        !new $nuxt.$coc.$(this.jQueryComponentId).hasClass(this.inputStatusMixins.init) // eslint-disable-line
+        !new this.$coc.$(this.jQueryComponentId).hasClass(this.inputStatusMixins.init) // eslint-disable-line
       )
-        new $nuxt.$coc.$(this.jQueryComponentId).addClass(this.inputStatusMixins.init); // eslint-disable-line
+        new this.$coc.$(this.jQueryComponentId).addClass(this.inputStatusMixins.init); // eslint-disable-line
       if (!this.isFired) {
         if (this.isFocused) {
-          new $nuxt.$coc.$(this.jQueryComponentId) // eslint-disable-line
+          new this.$coc.$(this.jQueryComponentId) // eslint-disable-line
             .removeClass(this.inputStatusMixins.regular)
             .removeClass(this.inputStatusMixins.success)
             .removeClass(this.inputStatusMixins.error)
-          new $nuxt.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
+          new this.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
             this.inputStatusMixins.focus
           )
         } else {
-          new $nuxt.$coc.$(this.jQueryComponentId) // eslint-disable-line
+          new this.$coc.$(this.jQueryComponentId) // eslint-disable-line
             .removeClass(this.inputStatusMixins.focus)
             .removeClass(this.inputStatusMixins.success)
             .removeClass(this.inputStatusMixins.error)
-          new $nuxt.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
+          new this.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
             this.inputStatusMixins.regular
           )
         }
       } else if (this.isValid) {
-        new $nuxt.$coc.$(this.jQueryComponentId) // eslint-disable-line
+        new this.$coc.$(this.jQueryComponentId) // eslint-disable-line
           .removeClass(this.inputStatusMixins.regular)
           .removeClass(this.inputStatusMixins.focus)
           .removeClass(this.inputStatusMixins.error)
-        new $nuxt.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
+        new this.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
           this.inputStatusMixins.success
         )
       } else {
-        new $nuxt.$coc.$(this.jQueryComponentId) // eslint-disable-line
+        new this.$coc.$(this.jQueryComponentId) // eslint-disable-line
           .removeClass(this.inputStatusMixins.regular)
           .removeClass(this.inputStatusMixins.success)
           .removeClass(this.inputStatusMixins.focus)
-        new $nuxt.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
+        new this.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
           this.inputStatusMixins.error
         )
       }
@@ -769,7 +781,7 @@ export default {
     emit() {
       let event = arguments.length == 0 ? 'input' : arguments[0]
       this.$emit(event, this.model)
-      this.watchMyDom()
+      // this.watchMyDom()
     },
     innerEmit(e) {
       this.$emit(e)

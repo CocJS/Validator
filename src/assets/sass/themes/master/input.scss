@@ -1,33 +1,28 @@
 @import "./border.scss";
 @import "./colors.scss";
 
-.ivu-input, .ivu-select, .ivu-select-selection{
-	@extend %coc-border-border;
+.coc-input-success input, .coc-input-success input:focus,
+.coc-input-success .ivu-select-selection,
+.coc-input-success .ivu-select-selection:focus,
+.coc-input-success .ivu-select-selection-focused{
+	border:  none !important;
+	border-style: solid !important;
+	border-width: 1px !important;
+	@extend %coc-success-tint-8-bg;
+	@extend %coc-success-shade-3-text;
+	@extend %coc-success-shade-3-border;
+	box-shadow: none !important;
 }
-.ivu-input:focus, .ivu-select:focus, .ivu-select-selection:focus{
-	@extend %coc-dark-border-border;
-}
-.ivu-radio-group-button .ivu-radio-wrapper-checked.ivu-radio-focus,
-.ivu-radio-group-button .ivu-radio-wrapper-checked{
-	@extend %coc-primary-border;
-	@extend %coc-primary-text;
-	box-shadow: none;
-}
-.ivu-radio-group-button .ivu-radio-wrapper:hover {
-    @extend %coc-dark-primary-text;
-}
-.ivu-radio-group-button .ivu-radio-wrapper:not(.ivu-radio-wrapper-checked) {
-    @extend %coc-content-text;
-}
-.ivu-tabs-tab.ivu-tabs-tab-active{
-	@extend %coc-primary-text;
-}
-.ivu-tabs-ink-bar{
-	@extend %coc-primary-bg;
-}
-.ivu-tabs-nav .ivu-tabs-tab:hover{
-	@extend %coc-light-primary-text;
-}
-.ivu-tag-primary, .ivu-tag-primary.ivu-tag-dot .ivu-tag-dot-inner{
-	@extend %coc-primary-bg;
+
+.coc-input-error input, .coc-input-error input:focus,
+.coc-input-error .ivu-select-selection,
+.coc-input-error .ivu-select-selection:focus,
+.coc-input-error .ivu-select-selection-focused{
+	border:  none !important;
+	border-style: solid !important;
+	border-width: 1px !important;
+	@extend %coc-error-tint-8-bg;
+	@extend %coc-error-text;
+	@extend %coc-error-border;
+	box-shadow: none !important;
 }
