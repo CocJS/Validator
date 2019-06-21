@@ -64,6 +64,8 @@
 
 .ivu-btn-ghost.ivu-btn.ivu-btn-primary{
 	@extend %coc-primary-border;
+	@extend %coc-primary-text;
+	border-width: 1px;
 	background-color: transparent;
 }
 .ivu-btn-ghost.ivu-btn.ivu-btn-primary:hover{

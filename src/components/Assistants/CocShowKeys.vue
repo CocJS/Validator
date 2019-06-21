@@ -1,20 +1,20 @@
 <template>
   <div :class = "cssMixins.container">
-    <div :class = "cssMixins.ulContainer">
-      <ul :class = "cssMixins.ul">
-        <li 
-          v-for = "(get , index) in $slots" 
+    <div :class = "cssMixins.listContainer">
+      <div :class = "cssMixins.list">
+        <div 
+          v-for = "(get , index) in $slots"
+          v-if = "onValidKey(index)"
           :key = "index" 
           :class = "cssMixins.li">
           <transition 
             :enter-active-class = "cssMixins.liEnter" 
             :leave-active-class = "cssMixins.liLeave">
             <slot 
-              v-if = "onValidKey(index)" 
               :name = "index"/>
           </transition>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
     <div v-if = "cssMixins.showCount">
       <slot 
@@ -24,7 +24,7 @@
         <div 
           v-if = "cssMixins.showCount && cssMixins.countText" 
           :class = "cssMixins.countContainer">
-          <span>{{ toggled + ' ' + cssMixins.countText + ' ' + numericSlotCount }}</span>
+          <span>{{ `${toggled} ${cssMixins.countText} ${numericSlotCount}` }}</span>
         </div>
         <div 
           v-if = "cssMixins.showCount && !cssMixins.countText && cssMixins.countIcon" 
@@ -42,7 +42,7 @@
         <Button 
           v-if = "cssMixins.viewing.showAll"
           :size = "cssMixins.buttonsSize.group"
-          :disabled = "toggled == numericSlotCount || numericSlotCount == 0"
+          :disabled = "toggled === numericSlotCount || numericSlotCount === 0"
           :type = "cssMixins.buttonTypes.showAll"
           :class = "cssMixins.buttons"
           :icon = "cssMixins.icons.showAll"
@@ -78,7 +78,7 @@
         <Button 
           v-if = "cssMixins.viewing.hideAll"
           :size = "cssMixins.buttonsSize.group"
-          :disabled = "toggled == 0 || numericSlotCount == 0"
+          :disabled = "toggled === 0 || numericSlotCount === 0"
           :type = "cssMixins.buttonTypes.hideAll"
           :class = "cssMixins.buttons"
           :icon = "cssMixins.icons.hideAll"
@@ -92,7 +92,7 @@
         <Button 
           v-if = "cssMixins.viewing.showAll"
           :size = "cssMixins.buttonsSize.showAll"
-          :disabled = "toggled == numericSlotCount || numericSlotCount == 0"
+          :disabled = "toggled === numericSlotCount || numericSlotCount === 0"
           :type = "cssMixins.buttonTypes.showAll"
           :class = "cssMixins.buttons"
           :icon = "cssMixins.icons.showAll"
@@ -128,7 +128,7 @@
         <Button 
           v-if = "cssMixins.viewing.hideAll"
           :size = "cssMixins.buttonsSize.hideAll"
-          :disabled = "toggled == 0 || numericSlotCount == 0"
+          :disabled = "toggled === 0 || numericSlotCount === 0"
           :type = "cssMixins.buttonTypes.hideAll"
           :class = "cssMixins.buttons"
           :icon = "cssMixins.icons.hideAll"
@@ -139,7 +139,7 @@
         </Button>
       </template>
     </div>
-    <div v-if = "numericSlotCount == 0">
+    <div v-if = "numericSlotCount === 0">
       <slot name = "empty"/>
     </div>
   </div>
@@ -165,7 +165,7 @@ export default {
       type: Object,
       default: () => {
         return {
-          container: 'row coc_house_keeper',
+          container: 'row house-keeper',
           buttons: '',
           buttonTypes: {
             less: null,
@@ -194,20 +194,20 @@ export default {
           },
           groupped: true,
           buttonsDiv: 'row center',
-          li: '',
+          listItem: 'col s12',
           liEnter: 'animated slideInDown',
           liLeave: 'animated slideOutLeft',
-          ul: '',
-          ulContainer: '',
+          list: 'row',
+          listContainer: 'row house-keeper',
           showCount: true,
-          count: 'right blue-text',
+          count: 'right coc-primary-text',
           countText: '/',
           countIcon: null,
-          countContainer: 'row coc_house_keeper blue-text right'
+          countContainer: 'row house-keeper coc-primary-text right'
         }
       }
     },
-    cssmixins: {
+    cssClasses: {
       type: Object,
       default: () => {
         return {}
@@ -256,7 +256,7 @@ export default {
       }
     },
     cssMixins() {
-      return new COC.Objects(this.classes).Mix(this.cssmixins).get
+      return new this.$coc.Objects(this.classes).Mix(this.cssClasses).get
     },
     hasMore() {
       return this.toggled < this.numericSlotCount
@@ -265,12 +265,12 @@ export default {
       return this.toggled > this.showkey
     },
     numericSlotCount() {
-      return this.len ? this.len : this.getNumericSlotCount()
+      return this.limit ? this.limit : this.getNumericSlotCount()
     }
   },
   mounted() {
     setTimeout(() => {
-      if (this.len !== null) {
+      if (this.limit !== null) {
         this.toggled = Math.min(this.showkey, this.numericSlotCount)
       }
     }, 400)
@@ -281,19 +281,19 @@ export default {
     $nuxt.$on('COCFormController' , (payloads)=>{ // eslint-disable-line
       if (!vm.scope) return
       //Type Check
-      if (payloads.type !== undefined && payloads.type != 'showkeys') return
+      if (payloads.type !== undefined && payloads.type !== 'showkeys') return
       //Check Matching
-      if (COC.IsMatchedArrays(vm.scope, payloads.scope)) {
+      if (this.$coc.IsMatchedArrays(vm.scope, payloads.scope)) {
         if (vm.model.control[payloads.controller] !== undefined) {
           vm.model.control[payloads.controller](
             payloads.credentials,
             payloads.callback !== 'undefined' &&
-            typeof payloads.callback == 'function'
+            typeof payloads.callback === 'function'
               ? payloads.callback
               : null
           )
         } else {
-          COC.DevWarn({
+          this.$coc.DevWarn({
             component: 'COC Show Keys',
             message:
               'The controller (' +
@@ -313,57 +313,57 @@ export default {
       }
     },
     showMore() {
-      if (arguments.length == 0 || arguments[0] == null)
+      if (arguments.length === 0 || arguments[0] === null)
         this.changeShowKey(true)
-      else if (typeof arguments[0] == 'function') {
+      else if (typeof arguments[0] === 'function') {
         this.changeShowKey(true, arguments[0])
       }
       this.emit('showmore')
     },
     showLess() {
-      if (arguments.length == 0 || arguments[0] == null)
+      if (arguments.length === 0 || arguments[0] === null)
         this.changeShowKey(false)
-      else if (typeof arguments[0] == 'function') {
+      else if (typeof arguments[0] === 'function') {
         this.changeShowKey(true, arguments[0])
       }
       this.emit('showless')
     },
     showCustom() {
       if (
-        arguments.length == 1 ||
-        (arguments.length > 1 && arguments[1] == null)
+        arguments.length === 1 ||
+        (arguments.length > 1 && arguments[1] === null)
       )
         this.changeShowKey(arguments[0])
-      else if (typeof arguments[1] == 'function') {
+      else if (typeof arguments[1] === 'function') {
         this.changeShowKey(arguments[0], arguments[1])
       }
     },
     showOnly() {
-      this.toggled = COC.GetRange(arguments[0], 0, this.numericSlotCount)
-      if (typeof arguments[0] == 'function') arguments[0]()
+      this.toggled = this.$coc.GetRange(arguments[0], 0, this.numericSlotCount)
+      if (typeof arguments[0] === 'function') arguments[0]()
       this.emit('showonly')
     },
     hideAll() {
       this.toggled = 0
-      if (typeof arguments[0] == 'function') arguments[0]()
+      if (typeof arguments[0] === 'function') arguments[0]()
       this.emit('hideall')
     },
     showAll() {
-      if (arguments.length == 0 || arguments[0] == null)
+      if (arguments.length === 0 || arguments[0] === null)
         this.changeShowKey(this.numericSlotCount)
-      else if (typeof arguments[0] == 'function') {
+      else if (typeof arguments[0] === 'function') {
         this.changeShowKey(this.numericSlotCount, arguments[0])
       }
       this.emit('showall')
     },
     changeShowKey() {
-      if (typeof arguments[0] == 'number') {
+      if (typeof arguments[0] === 'number') {
         this.toggled = Math.min(
           this.numericSlotCount,
           this.toggled + arguments[0]
         )
       }
-      if (typeof arguments[0] == 'boolean') {
+      if (typeof arguments[0] === 'boolean') {
         if (arguments[0]) {
           this.toggled = Math.min(
             this.numericSlotCount,
@@ -375,7 +375,7 @@ export default {
       }
       this.emit()
       //callback
-      if (typeof arguments[arguments.length - 1] == 'function') {
+      if (typeof arguments[arguments.length - 1] === 'function') {
         arguments[arguments.length - 1]()
       }
     },

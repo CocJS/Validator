@@ -1,20 +1,22 @@
 <template>
   <div 
-    :class = "[container_class]" 
+    :class = "[containerClass]" 
     :id= "mainId">
-    <div :class = "[toggler_class]">
-      <div @click = "handleClick($event)">
+    <div :class = "[togglerClass]">
+      <div
+        class = "col s12 house-keeper"
+        @click = "handleClick($event)">
         <slot 
           :val = "model.val" 
           name = "toggler">
           <a :class = "togglerStatus"><p>
-            <span :class = "[icon , statusClass ]"/>
-            <span :class = "[ statusClass ]"> {{ title }} </span>
-            <span :class = "['right' , statusClass , {'coc-angle-up' : isActive } , {'coc-angle-down' : !isActive}]"/>
+            <span :class = "[icon , statusClass, 'col coc-line-height-title' ]"/>
+            <span :class = "[ statusClass , 'col' ]"> {{ title }} </span>
+            <span :class = "['right col coc-line-height-title' , statusClass , {'ivu-icon ivu-icon-ios-arrow-up' : isActive } , {'ivu-icon ivu-icon-ios-arrow-down' : !isActive}]"/>
           </p></a>
           <small 
             v-if = "comment" 
-            :class = "[comment_class]"> {{ comment }} </small>
+            :class = "[commentClass]"> {{ comment }} </small>
         </slot>
       </div>
     </div>
@@ -33,19 +35,20 @@
 export default {
   name: 'Collapse',
   props: {
-    container_class: {
+    containerClass: {
       type: [Array, Object, String],
       default: 'row house-keeper'
     },
-    toggler_class: {
+    togglerClass: {
       type: [Array, Object, String],
-      default: 'row coc_container_toggler'
+      default:
+        'row house-keeper pointer coc-background-bg coc-standard-border-radius coc-border-1 coc-border-border'
     },
     icon: {
       type: [Array, Object, String],
-      default: 'el-icon-edit'
+      default: 'ivu-icon ivu-icon-md-create'
     },
-    comment_class: {
+    commentClass: {
       type: [Array, Object, String],
       default: 'row'
     },
@@ -57,17 +60,18 @@ export default {
       type: String,
       default: null
     },
-    body_class: {
+    bodyClass: {
       type: [Array, Object, String],
-      default: 'row'
+      default:
+        'row coc-margin-x-0 coc-margin-top-10px coc-margin-bottom-0 coc-padding-0'
     },
-    active_class: {
+    activeClass: {
       type: [Array, Object, String],
-      default: 'blue-text coc_text_m'
+      default: 'coc-text-heading coc-dark-primary-text'
     },
-    regular_class: {
+    regularClass: {
       type: [Array, Object, String],
-      default: 'blue-grey-text text-darken-2 coc_text_m'
+      default: 'coc-text-heading coc-primary-text'
     },
     toggler_on_class: {
       type: String,
@@ -108,15 +112,15 @@ export default {
     },
     statusClass() {
       return this.isActive && this.isFired
-        ? this.active_class
-        : this.regular_class
+        ? this.activeClass
+        : this.regularClass
     },
     togglerStatus() {
       return this.isActive ? this.toggler_on_class : this.toggler_off_class
     },
     bodyClasses() {
       return [
-        this.body_class,
+        this.bodyClass,
         this.isActive ? this.animations.enter : this.animations.leave
       ]
     },
@@ -180,11 +184,7 @@ export default {
       this.toggle()
     },
     toggle() {
-      if (this.isActive) {
-        this.close()
-      } else {
-        this.open()
-      }
+      this[this.isActive ? 'close' : 'open']()
     },
     open() {
       this.isFired = true
@@ -268,8 +268,4 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.coc_container_toggler{
- cursor : pointer
-}
-
 </style>

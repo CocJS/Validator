@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import COC from './core.js'
-import Arrays from './arrays.js'
-import Objects from './objects.js'
-import $ from './domer.js'
+import COC from './Core'
+import Arrays from './Arrays'
+import Objects from './Objects'
+import $ from './Dommer'
 COC.Arrays = Arrays
 COC.Objects = Objects
 COC.$ = $

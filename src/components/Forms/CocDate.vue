@@ -1,160 +1,74 @@
 <template>
-  <div class = "row coc_house_keeper">
+  <div>
     <DatePicker
       :id = "componentId"
-      :class = "picker_classes"
-      v-model="datepicker"
-      :type="type"
-      :size = "size"
-      :picker-options="quickOptions"
-      :range-separator="range_separator"
-      :start-placeholder="start_placeholder"
-      :end-placeholder="end_placeholder"
-      :prefix-icon = "iconClass.prefix"
-      :suffix-icon = "iconClass.suffix"
-      :default-time = "defaultTime"
-      :default-value = "defaultTime"
-      :placeholder="placeholder"
+      v-bind = "bind"
+      v-model = "input"
       format="d/M/yyyy"
-      value-format="yyyy-MM-dd"
-      @change = "construct()"
-      @input = "construct()"
-      @create= "watchMyDom()"
-      @focus = "isFocused = true"
-      @blur = "isFocused = false"/>
-    <div 
-      v-if = "isFired && !isValid" 
-      class = "row coc_house_keeper">
-      <ul>
-        <li 
-          v-for = "err in erros" 
-          :class="[status_classes.errmenu ,'animated slideInDown']" 
-          :key = "err" >
-          <span :class = "error_bus[err].icon"/>
-          <span>{{ error_bus[err].msg }}</span>
-        </li>
-      </ul>
-    </div>
+      class = "full-width"
+      @on-change = "isFired = true">
+      <slot/>
+    </DatePicker>
+    <label
+      v-if = "!isValid && isFired"
+      :class = "[ status_classes.errmenu , 'animated slideInUp']">
+      <span :class = "errorsBus[error].icon"/>
+      <span>{{ errorsBus[error].msg }}</span>
+    </label>
   </div>
 </template>
+
 <script>
 export default {
   name: 'CocDate',
   props: {
-    quick: {
-      type: Array,
-      default: null
-    },
-    margins: {
+    bind: {
       type: Object,
       default: null
     },
-    is_required: {
+    light: {
       type: Boolean,
       default: false
-    },
-    type: {
-      type: String,
-      default: 'date'
     },
     scope: {
       type: Array,
-      default: null
+      default: () => {
+        return []
+      }
     },
-    size: {
-      type: String,
-      default: null
-    },
-    picker_classes: {
-      type: [Object, Array, String],
-      default: 'col s12 coc_house_keeper'
-    },
-    error_classes: {
-      type: [Object, String],
-      default: 'red-text'
-    },
-    placeholder: {
-      type: String,
-      default: 'Pick a day'
-    },
-    icon: {
-      type: String,
-      default: 'el-icon-date'
-    },
-    icon_align: {
-      type: String,
-      default: 'left'
-    },
-    default_time: {
-      type: [Object, String],
-      default: null
-    },
-    unlink_panels: {
+    required: {
       type: Boolean,
       default: false
     },
-    range_separator: {
-      type: String,
-      default: 'to'
-    },
-    start_placeholder: {
-      type: String,
-      default: 'Start date'
-    },
-    end_placeholder: {
-      type: String,
-      default: 'End date'
-    },
-    error_bus: {
+    max: {
       type: Object,
-      default: () => {
-        return {
-          is_required: {
-            msg: 'This field is required.',
-            icon: 'coc-alert-circle'
-          },
-          max: {
-            msg: 'This date has passed the maximum value.',
-            icon: 'coc-alert-circle'
-          },
-          min: {
-            msg: 'This date is less than the minimum value.',
-            icon: 'coc-alert-circle'
-          }
-        }
-      }
+      default: null
     },
-    icon_class: {
-      type: String,
-      default: ''
+    min: {
+      type: Object,
+      default: null
     },
-    icon_focus: {
-      type: String,
-      default: ''
-    },
-    icon_success: {
-      type: String,
-      default: 'teal-text'
-    },
-    icon_error: {
-      type: String,
-      default: 'coc_text_error'
+    mixins: {
+      type: Object,
+      default: null
     },
     input_status_classes: {
       type: Object,
       default: () => {
         return {
-          success: 'coc_input_success',
-          error: 'coc_input_error',
-          focus: 'coc_input_focus',
-          regular: 'coc_input_regular',
-          init: 'coc_input_init'
+          success: 'coc-input-success',
+          error: 'coc-input-error',
+          focus: 'coc-input-focus',
+          regular: 'coc-input-regular',
+          init: 'coc-input-init'
         }
       }
     },
-    light: {
-      type: Boolean,
-      default: false
+    input_status_classes_mixins: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     },
     status_classes: {
       type: Object,
@@ -165,59 +79,57 @@ export default {
           errmenu: 'red-text'
         }
       }
-    },
-    input_status_classes_mixins: {
-      type: Object,
-      default: () => {
-        return {}
-      }
     }
   },
   data() {
     return {
-      datepicker: null,
-      pickerOptions: null,
-      clientDate: moment()
-        .subtract(new Date().getTimezoneOffset(), 'm')
-        .format('YYYY-MM-DD'),
-      offset: new Date().getTimezoneOffset(),
-      shortcuts: this.quick ? new $nuxt.$coc.Arrays(this.quick).Pluck("msg").get : [], // eslint-disable-line
-      messages: {
-        placeholder: this.placeholder,
-        start_placeholder: this.start_placeholder,
-        end_placeholder: this.end_placeholder
-      },
-      defaultTime: this.default_time
-        ? this.createObjectDate(this.default_time)
-        : null,
-      erros: [],
+      clientOffset: new Date().getTimezoneOffset(),
+      input: null,
+      isValid: true,
       isFired: false,
-      isValid: false
+      error: null
     }
   },
   computed: {
-    model() {
-      return {
-        val: this.datepicker,
-        control: {
-          update: this.update,
-          clear: this.clear,
-          validate: this.validate,
-          focus: this.focus,
-          blur: this.blur,
-          select: this.select,
-          copy: this.copy,
-          meta: this.meta,
-          reset: this.reset,
-          submit: this.submit,
-          validate: this.ifValid
-        },
-        meta: {
-          fired: this.isFired,
-          valid: this.isValid,
-          errors: this.errors,
-          domId: this.componentId
+    eventController() {
+      return new this.$coc.FormController({
+        api: $nuxt,
+        type: 'Date',
+        scope: this.scope,
+        model: this.model,
+        component: {
+          placeholder: this.placeholder,
+          domId: this.componentId,
+          type: 'Date',
+          val: this.input
         }
+      })
+    },
+    model() {
+      return this.light
+        ? this.input
+        : {
+            val: this.input,
+            control: {
+              update: this.update,
+              clear: this.clear,
+              meta: this.meta,
+              reset: this.reset,
+              submit: this.submit,
+              validate: this.validate
+            },
+            meta: {
+              fired: this.isFired,
+              valid: this.isValid,
+              errors: this.errors,
+              domId: this.componentId
+            }
+          }
+    },
+    limits() {
+      return {
+        max: this.getLimitDate(this.max),
+        min: this.getLimitDate(this.min)
       }
     },
     componentId() {
@@ -227,7 +139,7 @@ export default {
       return '#coc_date_picker_' + this._uid
     },
     inputStatusMixins() {
-      return new $nuxt.$coc.Objects(this.input_status_classes).Mix( // eslint-disable-line
+      return new this.$coc.Objects(this.input_status_classes).Mix( // eslint-disable-line
         this.input_status_classes_mixins
       ).get
     },
@@ -247,302 +159,228 @@ export default {
       result.prefix = this.icon_align != 'right' ? str : ''
       return result
     },
-    limits() {
-      if (!this.margins) return null
-      let limits = {}
-      //max
-      if (this.margins.max !== undefined)
-        limits.max = this.createObjectDate(this.margins.max)
-      //min
-      if (this.margins.min !== undefined)
-        limits.min = this.createObjectDate(this.margins.min)
-      return limits
-    },
-    shortcutsDates() {
-      return this.getShortcutsDates()
-    },
-    quickShortcuts() {
-      const vm = this
-      if (!this.quick) return []
-      let temp = [],
-        i
-      for (i = 0; i < this.quick.length; i++) {
-        let date = vm.shortcutsDates[i]
-        temp.push({
-          text: vm.shortcuts[i],
-          onClick(picker) {
-            vm.watchMyDom()
-            //console.log(picker)
-            //picker.$emit('pick',  moment(vm.shortcutsDates[i]).format('YYYY-MM-DD') );
-          }
-        })
-      }
-      return temp
-    },
-    quickOptions() {
-      const vm = this
-      if (!this.quick) return null
-      let options = {
-        disabledDate(time) {
-          let max =
-            vm.limits.max !== undefined && vm.limits.max !== null
-              ? vm.limits.max
-              : '2100-01-01'
-          let min =
-            vm.limits.min !== undefined && vm.limits.min !== null
-              ? vm.limits.min
-              : '1900-01-01'
-          return (
-            time.getTime() > new Date(max) || time.getTime() < new Date(min)
-          )
+    errorsBus() {
+      const init = {
+        HasValue: {
+          icon: 'ivu-icon ivu-icon-md-alert',
+          msg: 'This field is required.'
         },
-        shortcuts: this.quickShortcuts
+        InMaxRange: {
+          icon: 'ivu-icon ivu-icon-md-alert',
+          msg: `The maximum value for this date cant be greater than ${
+            this.max ? this.$moment(this.limits.max).format('DD MMMM YYYY') : ''
+          }`
+        },
+        InMinRange: {
+          icon: 'ivu-icon ivu-icon-md-alert',
+          msg: `The maximum value for this date cant be less than ${
+            this.min ? this.$moment(this.limits.min).format('DD MMMM YYYY') : ''
+          }`
+        }
       }
-      return options
+      if (this.mixins) {
+        let k
+        for (k in this.mixins) {
+          if (init[k] !== undefined) {
+            if (this.mixins[k].msg !== undefined)
+              init[k].msg = this.mixins[k].msg
+            if (this.mixins[k].icon !== undefined)
+              init[k].icon = this.mixins[k].icon
+          }
+        }
+      }
+      return init
+    }
+  },
+  watch: {
+    input: {
+      immediate: false,
+      handler(val) {
+        const validationOutput = this.getValidationValue(
+          val || (typeof val === 'string' && val.length)
+            ? this.$moment(val)
+            : null
+        )
+        this.isValid = validationOutput.valid
+        this.error = validationOutput.valid ? null : validationOutput.error
+        this.watchMyDom()
+        this.$emit('input', this.model)
+      }
     }
   },
   mounted() {
-    if (this.defaultTime) {
-      this.datepicker = this.defaultTime
-      this.emit()
-    }
-    this.watchMyDom()
-    const vm = this
-    $nuxt.$on('COCFormController', payloads => {
-      if (!vm.scope) return
-      //Type Check
-      if (payloads.type !== undefined && payloads.type != 'date') return
-      //Check Matching
-      if ($nuxt.$coc.IsMatchedArrays(vm.scope, payloads.scope)) { // eslint-disable-line
-        if (vm.model.control[payloads.controller] !== undefined) {
-          vm.model.control[payloads.controller](
-            payloads.credentials,
-            payloads.callback !== 'undefined' &&
-            typeof payloads.callback == 'function'
-              ? payloads.callback
-              : null
-          )
-        } else {
-          $nuxt.$coc.DevWarn({ // eslint-disable-line
-            component: 'Coc Date',
-            message:
-              'The controller (' +
-              payloads.controller +
-              ') that you`re trying to access is not exist.'
-          })
-        }
-      } else return
-    })
+    this.eventController.Start()
   },
   methods: {
-    createObjectDate(object) {
-      if (object.date !== undefined) {
-        return object.date
+    getValidationValue(val) {
+      // Required
+      if (this.required && !val) {
+        return {
+          valid: false,
+          error: 'HasValue'
+        }
       }
-      let from = object.from !== undefined ? object.from : this.clientDate
-      return object.count > 0
-        ? moment(from)
-            .add(object.count, object.unit)
-            .format('YYYY-MM-DD')
-        : moment(from)
-            .subtract(object.count * -1, object.unit)
-            .format('YYYY-MM-DD')
+
+      // Max
+
+      if (this.limits.max && val) {
+        if (this.limits.max.diff(val) < 0) {
+          return {
+            valid: false,
+            error: 'InMaxRange'
+          }
+        }
+      }
+
+      // Min
+
+      if (this.limits.min && val) {
+        if (this.limits.min.diff(val) > 0) {
+          return {
+            valid: false,
+            error: 'InMinRange'
+          }
+        }
+      }
+
+      return {
+        valid: true
+      }
     },
-    getShortcutsDates() {
-      if (!this.quick) return []
-      let temp = [],
-        i
-      for (i = 0; i < this.quick.length; i++) {
-        temp.push(this.createObjectDate(this.quick[i].margins))
+    validate() {
+      this.isValid = true
+      const validation = this.getValidationValue(
+        this.input || (typeof val === 'string' && this.input.length)
+          ? this.$moment(this.input)
+          : null
+      )
+      this.isFired = true
+      this.isValid = validation.valid
+      this.error = validation.error
+      this.watchMyDom()
+      if (arguments.length > 0) {
+        if (arguments[0] == 'meta') {
+          this.isFired = true
+          this.meta('valid')
+        }
       }
-      return temp
+      //Check and Call the aruguments callback
+      if (typeof arguments[arguments.length - 1] == 'function') {
+        arguments[arguments.length - 1]()
+      }
+      return this.model.control
+    },
+    getLimitDate(limit) {
+      if (!limit) return null
+      // Date
+      if (limit.date && !limit.margin) {
+        return limit.date
+      }
+      //  Date and Operation
+      if (
+        limit.date &&
+        limit.margin &&
+        limit.margin.count &&
+        limit.margin.unit
+      ) {
+        return this.$moment(limit.date).add(
+          limit.margin.count,
+          limit.margin.unit
+        )
+      }
+      // Operation from Client Date
+      if (
+        !limit.date &&
+        limit.margin &&
+        limit.margin.count &&
+        limit.margin.unit
+      ) {
+        return this.$moment()
+          .add(this.clientOffset, 'm')
+          .add(limit.margin.count, limit.margin.unit)
+      }
     },
     watchMyDom() {
+      if (!this.inputStatusMixins) return
       if (
-        !new $nuxt.$coc.$(this.jQueryComponentId).hasClass(this.inputStatusMixins.init) // eslint-disable-line
+        !new this.$coc.$(this.jQueryComponentId).HasClass(this.inputStatusMixins.init) // eslint-disable-line
       )
-        new $nuxt.$coc.$(this.jQueryComponentId).addClass(this.inputStatusMixins.init); // eslint-disable-line
+        new this.$coc.$(this.jQueryComponentId).AddClass(this.inputStatusMixins.init); // eslint-disable-line
       if (!this.isFired) {
         if (this.isFocused) {
-          new $nuxt.$coc.$(this.jQueryComponentId) // eslint-disable-line
-            .removeClass(this.inputStatusMixins.regular)
-            .removeClass(this.inputStatusMixins.success)
-            .removeClass(this.inputStatusMixins.error)
-          new $nuxt.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
+          new this.$coc.$(this.jQueryComponentId) // eslint-disable-line
+            .RemoveClass(this.inputStatusMixins.regular)
+            .RemoveClass(this.inputStatusMixins.success)
+            .RemoveClass(this.inputStatusMixins.error)
+          new this.$coc.$(this.jQueryComponentId).AddClass( // eslint-disable-line
             this.inputStatusMixins.focus
           )
         } else {
-          new $nuxt.$coc.$(this.jQueryComponentId) // eslint-disable-line
-            .removeClass(this.inputStatusMixins.focus)
-            .removeClass(this.inputStatusMixins.success)
-            .removeClass(this.inputStatusMixins.error)
-          new $nuxt.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
+          new this.$coc.$(this.jQueryComponentId) // eslint-disable-line
+            .RemoveClass(this.inputStatusMixins.focus)
+            .RemoveClass(this.inputStatusMixins.success)
+            .RemoveClass(this.inputStatusMixins.error)
+          new this.$coc.$(this.jQueryComponentId).AddClass( // eslint-disable-line
             this.inputStatusMixins.regular
           )
         }
       } else if (this.isValid) {
-        new $nuxt.$coc.$(this.jQueryComponentId) // eslint-disable-line
-          .removeClass(this.inputStatusMixins.regular)
-          .removeClass(this.inputStatusMixins.focus)
-          .removeClass(this.inputStatusMixins.error)
-        new $nuxt.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
+        new this.$coc.$(this.jQueryComponentId) // eslint-disable-line
+          .RemoveClass(this.inputStatusMixins.regular)
+          .RemoveClass(this.inputStatusMixins.focus)
+          .RemoveClass(this.inputStatusMixins.error)
+        new this.$coc.$(this.jQueryComponentId).AddClass( // eslint-disable-line
           this.inputStatusMixins.success
         )
       } else {
-        new $nuxt.$coc.$(this.jQueryComponentId) // eslint-disable-line
-          .removeClass(this.inputStatusMixins.regular)
-          .removeClass(this.inputStatusMixins.success)
-          .removeClass(this.inputStatusMixins.focus)
-        new $nuxt.$coc.$(this.jQueryComponentId).addClass( // eslint-disable-line
+        new this.$coc.$(this.jQueryComponentId) // eslint-disable-line
+          .RemoveClass(this.inputStatusMixins.regular)
+          .RemoveClass(this.inputStatusMixins.success)
+          .RemoveClass(this.inputStatusMixins.focus)
+        new this.$coc.$(this.jQueryComponentId).AddClass( // eslint-disable-line
           this.inputStatusMixins.error
         )
       }
-      const vm = this
-
-      new $nuxt.$coc.$(".el-picker-panel__shortcut").click(function() { // eslint-disable-line
-        let index = vm.shortcuts.indexOf(new $nuxt.$coc.$(this).text()); // eslint-disable-line
-        if (index == -1 || vm.datepicker == vm.shortcutsDates[index]) return
-        setTimeout(() => {
-          vm.datepicker = vm.shortcutsDates[index]
-          vm.emit()
-        }, 300)
-      })
     },
-    ifValid() {
-      this.erros = []
-      if (
-        this.is_required &&
-        (this.datepicker == null ||
-          this.datepicker.length == 0 ||
-          this.datepicker == 'Invalid date')
-      )
-        this.erros.push('is_required')
-      if (
-        this.limits.max &&
-        new Date(this.limits.max).getTime() <
-          new Date(this.datepicker).getTime()
-      )
-        this.erros.push('max')
-      if (
-        this.limits.max &&
-        new Date(this.limits.max).getTime() <
-          new Date(this.datepicker).getTime()
-      )
-        this.erros.push('min')
-      this.isValid = this.erros.length == 0 ? true : false
-      return this.erros.length == 0 ? true : false
-    },
-    emit() {
-      let event = arguments.length == 0 ? 'input' : arguments[0]
-      this.$emit(event, this.model)
-      this.watchMyDom()
-    },
-
-    //CSMA METHODS
-    construct() {
-      this.isFired = true
-      this.ifValid()
-      this.emit()
-    },
-    update() {
-      this.datepicker = arguments[0]
-      this.construct({ remote: true, value: arguments[0] })
-      //Check and Call the aruguments callback
-      if (typeof arguments[arguments.length - 1] == 'function') {
-        arguments[arguments.length - 1]()
-      }
-    },
-    clear() {
-      this.datepicker = ''
-      this.construct({ remote: true, value: '' })
-      //Check and Call the aruguments callback
-      if (typeof arguments[arguments.length - 1] == 'function') {
-        arguments[arguments.length - 1]()
-      }
-    },
-    focus() {
-      new $nuxt.$coc.$(this.jQueryComponentId).focus(); // eslint-disable-line
-      //Check and Call the aruguments callback
-      if (typeof arguments[arguments.length - 1] == 'function') {
-        arguments[arguments.length - 1]()
-      }
-    },
-    blur() {
-      new $nuxt.$coc.$(this.jQueryComponentId).blur(); // eslint-disable-line
-      //Check and Call the aruguments callback
-      if (typeof arguments[arguments.length - 1] == 'function') {
-        arguments[arguments.length - 1]()
-      }
-    },
-    select() {
-      new $nuxt.$coc.$(this.jQueryComponentId).focus().select(); // eslint-disable-line
-      //Check and Call the aruguments callback
-      if (typeof arguments[arguments.length - 1] == 'function') {
-        arguments[arguments.length - 1]()
-      }
-    },
-    copy() {
-      if (!$nuxt.$coc.HasValue(this.datepicker)) { // eslint-disable-line
-        this.$message({
-          showClose: true,
-          message: 'There`s no content to be copied in this field.',
-          type: 'error'
-        })
-        return
-      }
-      let copyText = document.getElementById(this.componentId)
-      copyText.select()
-      document.execCommand('copy')
-      this.$message({
-        showClose: true,
-        message: 'Your text was copied.',
-        type: 'success'
-      })
-      this.blur()
-      //Check and Call the aruguments callback
-      if (typeof arguments[arguments.length - 1] == 'function') {
-        arguments[arguments.length - 1]()
-      }
-    },
-    meta() {
-      if (
-        arguments.length == 0 ||
-        this.model.meta[arguments[0]] === undefined
-      ) {
-        $nuxt.$coc.DevWarn({ // eslint-disable-line
-          component: 'COC EL INPUT',
-          message:
-            'The meta that you are requesting is not available in this CSMA.'
-        })
-        return
-      }
-      $nuxt.$emit('COCFormMeta', {
-        scope: this.scope,
-        meta: arguments[0],
-        credentials: this.model.meta[arguments[0]]
-      })
+    // Controllers
+    meta(meta) {
+      this.eventController.HandleMeta(meta)
     },
     reset() {
-      this.datepicker = null
+      this.input = null
       this.isFired = false
-      this.errors = []
+      this.error = null
       this.watchMyDom()
       //Check and Call the aruguments callback
       if (typeof arguments[arguments.length - 1] == 'function') {
         arguments[arguments.length - 1]()
       }
+      return this.model.control
     },
     submit() {
-      $nuxt.$emit('COCFormController', {
-        scope: this.scope,
-        controller: 'click',
-        credentials: null,
-        type: 'button'
-      })
+      this.isFired = true
+      this.eventController.Submit()
       //Check and Call the aruguments callback
       if (typeof arguments[arguments.length - 1] == 'function') {
         arguments[arguments.length - 1]()
       }
+      return this.model.control
+    },
+    update() {
+      this.input = arguments[0]
+      //Check and Call the aruguments callback
+      if (typeof arguments[arguments.length - 1] == 'function') {
+        arguments[arguments.length - 1]()
+      }
+      return this.model.control
+    },
+    clear() {
+      this.input = ''
+      //Check and Call the aruguments callback
+      if (typeof arguments[arguments.length - 1] == 'function') {
+        arguments[arguments.length - 1]()
+      }
+      return this.model.control
     }
   }
 }

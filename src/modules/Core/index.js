@@ -1,3 +1,4 @@
+import Defaults from './defaults'
 const COC = {}
 
 // Loggers =====================================================
@@ -7,7 +8,6 @@ COC.DevWarn = options => {
   if (COC.Mode !== 'development') {
     return
   }
-  console.warn('%c COC Warining!', 'color : orange; font-size : 20px;')
   if (options.component) {
     console.warn(
       `%c Component : ${options.component}`,
@@ -19,6 +19,15 @@ COC.DevWarn = options => {
       `%c Message : ${options.message}`,
       'color : #880e4f; font-size : 12px;'
     )
+  }
+  if (options.log) console.log(options.log)
+}
+
+COC.GetAlignment = (instance = COC) => {
+  return {
+    master: instance.App.Defaults.Design.Alignment,
+    inverse:
+      instance.App.Defaults.Design.Alignment === 'left' ? 'right' : 'left'
   }
 }
 
@@ -271,15 +280,9 @@ COC.NextCircularIndex = (index, arr) =>
   index === arr.length - 1 ? 0 : index + 1
 COC.CircularSubtract = (slave, master, round) =>
   slave > master ? round - slave + master : master - slave
-
-// App Instance
-COC.App = {}
-COC.ConfigApp = options => {
-  COC.App = options
-  if (COC.App && COC.App.mode) {
-    COC.Mode = COC.App.mode
-  }
-  if (!COC.Mode || !COC.Mode !== 'production') {
+// Greetings
+COC.Greetings = () => {
+  if (process.browser && (!COC.Mode || !COC.Mode !== 'production')) {
     console.log(
       '%cCOC',
       'color: #e91e63; font-size: 80px; font-family: monospace;'
@@ -288,6 +291,24 @@ COC.ConfigApp = options => {
       '%cdevelopment mode',
       'color: #e91e63; font-size: 25px; font-family: monospace;'
     )
+  }
+}
+// App Instance
+COC.App = {
+  Defaults
+}
+COC.Config = {
+  Meta(options) {
+    COC.App = { ...COC.App, ...options }
+    if (COC.App && COC.App.mode) {
+      COC.Mode = COC.App.mode
+    }
+    COC.Greetings()
+  },
+  Defaults(options) {
+    Object.keys(options).forEach(key => {
+      COC.App.Defaults[key] = options[key]
+    })
   }
 }
 

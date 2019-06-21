@@ -14,7 +14,7 @@
       </div>
     </slot>
     <slot name = "bottom">
-      <div class = "bounds-respect-padding-top-10px bounds-respect-padding-bottom-10px alpha-white-1">
+      <div class = "bounds-respect-padding-top-10px coc-padding-bottom-6vh alpha-white-1">
         <div class="container">
           <span>Version {{ $coc.App.version }}</span>
           <span class = "right">{{ $coc.App.name }} by {{ $coc.App.author }} {{ $moment().format('YYYY') }} &copy; </span>

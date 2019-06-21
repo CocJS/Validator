@@ -2,14 +2,10 @@
   <div>
     <coc-axios
       v-if = "!local"
-      :url = "submit_at"
-      :params = "params"
-      :method = "method"
-      :free_origin = "free_origin"
-      :xdata = "submitData"
+      v-bind = "request"
       v-model = "retriever"
       :scope = "scope"
-      prevent_on_mount
+      prevent-on-mount
       @success = "handleSubmit($event)"
       @catch = "handleCatch($event)"/>
     <Button
@@ -21,20 +17,22 @@
       :class = "classes"
       :icon = "icon"
       :size = "size"
+      :long = "long"
       v-bind = "bind"
       :disabled = "disabled"
-      @click = "construct()"><template v-if = "placeholder && placeholder.length">{{ placeholder }}</template></Button>
+      @click = "construct()">
+      <slot
+        name = "default">
+        <template v-if = "placeholder && placeholder.length">{{ placeholder }}</template>
+      </slot>
+    </Button>
   </div>
 </template>
 <script>
 export default {
   name: 'CocButton',
   props: {
-    submit_at: {
-      type: String,
-      default: 'foo'
-    },
-    xdata: {
+    request: {
       type: Object,
       default: null
     },
@@ -53,18 +51,6 @@ export default {
     circle: {
       type: Boolean,
       default: false
-    },
-    free_origin: {
-      type: Boolean,
-      default: false
-    },
-    method: {
-      type: String,
-      default: 'post'
-    },
-    params: {
-      type: Object,
-      default: null
     },
     classes: {
       type: [Array, Object, String],
@@ -102,15 +88,19 @@ export default {
       type: Boolean,
       default: false
     },
-    success_at: {
+    sucessAt: {
       type: Array,
       default: null
+    },
+    long: {
+      type: Boolean,
+      default: false
     },
     bind: {
       type: Object,
       default: null
     },
-    success_msg: {
+    successMessage: {
       type: Object,
       default: () => {
         return {
@@ -120,7 +110,25 @@ export default {
         }
       }
     },
-    error_at: {
+    resolveSuccessMessage: {
+      type: Function,
+      default: err => {
+        return {
+          body: 'Submited Successfuly',
+          title: 'Done'
+        }
+      }
+    },
+    resolveErrorMessage: {
+      type: Function,
+      default: err => {
+        return {
+          body: err.response.data,
+          title: 'Whoops!'
+        }
+      }
+    },
+    errorAt: {
       type: Array,
       default: null
     },
@@ -136,7 +144,7 @@ export default {
       type: Boolean,
       default: null
     },
-    validation_msg: {
+    validationMessage: {
       type: Object,
       default: () => {
         return {
@@ -145,7 +153,15 @@ export default {
         }
       }
     },
-    precondition_msg: {
+    beforeSubmit: {
+      type: [Promise, Function],
+      default: null
+    },
+    resolveResponse: {
+      type: Function,
+      default: () => true
+    },
+    preconditionMessage: {
       type: Object,
       default: () => {
         return {
@@ -153,6 +169,10 @@ export default {
           title: 'Whoops!'
         }
       }
+    },
+    reset: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -164,6 +184,20 @@ export default {
     }
   },
   computed: {
+    eventController() {
+      return new this.$coc.FormController({
+        api: $nuxt,
+        type: 'button',
+        scope: this.scope,
+        model: this.model,
+        component: {
+          placeholder: this.placeholder,
+          domId: this.componentId,
+          type: 'button',
+          val: this.input
+        }
+      })
+    },
     hasErrors() {
       return this.errorStack && this.errorStack.length > 0
     },
@@ -181,6 +215,7 @@ export default {
         },
         meta: {
           hasErrors: this.hasErrors,
+          errorStack: this.errorStack,
           loading: this.isLoading,
           networkErrors: this.networkErrors,
           response: this.retriever.response,
@@ -193,54 +228,41 @@ export default {
   mounted() {
     this.emit()
     const vm = this
-    $nuxt.$on('COCFormController', payloads => {
-      //Type Checking
-      if (payloads.type === undefined || payloads.type != 'button') return
-      //Check Matching
-      if ($nuxt.$coc.IsMatchedArrays(vm.scope, payloads.scope)) { // eslint-disable-line
-        if (vm.model.control[payloads.controller] !== undefined) {
-          vm.model.control[payloads.controller](
-            payloads.credentials,
-            payloads.callback !== 'undefined' &&
-            typeof payloads.callback == 'function'
-              ? payloads.callback
-              : null
-          )
-        } else {
-          $nuxt.$coc.DevWarn({ // eslint-disable-line
-            message: 'Coc Button',
-            desc:
-              'The controller (' +
-              payloads.controller +
-              ') that you`re trying to access is not exist.'
-          })
-        }
-      } else return
-    })
-    $nuxt.$on('COCFormMeta', payloads => {
-      if (payloads.meta && payloads.meta == 'valid')
-        if ($nuxt.$coc.IsMatchedArrays(vm.scope, payloads.scope)) { // eslint-disable-line
-          if (payloads.credentials == false) {
-            vm.errorStack.push(1)
-          } else return
-        } else return
-      else return
+    this.eventController.Start()
+    this.eventController.ReceiveMeta('valid', payloads => {
+      if (payloads.credentials === false || payloads.pennding) {
+        vm.errorStack.push(payloads)
+      }
     })
   },
   methods: {
     construct() {
+      if (this.beforeSubmit) {
+        this.waitingLocalResponse = true
+        this.beforeSubmit()
+          .then(() => {
+            this.click()
+          })
+          .catch(err => {
+            this.waitingLocalResponse = false
+            this.$Message.error({ content: 'Some thing went wrong' })
+          })
+      } else {
+        this.click()
+      }
+    },
+    click() {
       this.emit('clicked')
       //Check the precondition
       if (this.precondition !== null && this.precondition == false) {
-        this.notifi(this.precondition_msg)
-        this.emit('validation_refused')
+        this.notifi(this.preconditionMessage)
+        this.emit('coc-validation-refused')
         return
       }
       this.errorStack = []
       if (!this.ignore) {
         this.waitingLocalResponse = true
-        $nuxt.$emit('COCFormController', {
-          scope: this.scope,
+        this.eventController.Send({
           controller: 'validate',
           credentials: 'meta'
         })
@@ -248,11 +270,11 @@ export default {
       setTimeout(() => {
         this.waitingLocalResponse = false
         if (this.hasErrors) {
-          this.notifi(this.validation_msg)
-          this.emit('validation_refused')
+          this.notifi(this.validationMessage)
+          this.emit('coc-validation-refused')
           return
         } else {
-          this.emit('validation_passed')
+          this.emit('coc-validation-passed')
           this.submit()
         }
       }, 500)
@@ -293,71 +315,54 @@ export default {
         })
       }
     },
-    handleSubmit(e) {
-      this.networkErrors = null
-      //Search For Errors
-      if (this.error_at) {
-        let errorIndex = $nuxt.$coc.GetIndex( // eslint-disable-line
-          $nuxt.$coc.FilterArrayOfObjects(this.error_at, "res"), // eslint-disable-line
-          e.response
-        )
-        if (errorIndex != -1) {
-          this.notifi({
-            body: this.error_at[errorIndex].body,
-            title: this.error_at[errorIndex].title
-          })
-          this.emit('submit_refused')
-          return
+    resolveMessage(message, type) {
+      const defaultMessage = {
+        type,
+        body: '',
+        title: type === 'success' ? 'Done' : 'Whoops!'
+      }
+      if (typeof message === 'string') {
+        return {
+          ...defaultMessage,
+          body: message
+        }
+      } else if (typeof message === 'object') {
+        return {
+          ...defaultMessage,
+          ...message
         }
       }
-      //Search For Success
-      if (
-        this.computed ||
-        (this.success_at && $nuxt.$coc.ArrayIncludes(this.success_at, e.response)) // eslint-disable-line
-      ) {
-        this.notifi(
-          new $nuxt.$coc.Objects(this.success_msg).MixAndCreate({ type: "success" }) // eslint-disable-line
-        )
-        this.emit('submit_accepted')
-        $nuxt.$emit('COCFormController', {
-          scope: this.scope,
-          controller: 'reset',
-          credentials: null
-        })
+    },
+    handleSubmit(e) {
+      this.networkErrors = null
+      if (!this.resolveResponse || this.resolveResponse(e.response)) {
+        if (this.local) {
+          this.notifi({ ...this.successMessage, ...{ type: 'success' } })
+        } else {
+          this.notifi(
+            this.resolveMessage(
+              this.resolveSuccessMessage(e.response),
+              'success'
+            )
+          )
+        }
+        this.emit('coc-submit-accepted')
+        if (this.reset) {
+          this.eventController.Send({
+            scope: this.scope,
+            controller: 'reset',
+            credentials: null
+          })
+        }
         return
       }
     },
     handleCatch(e) {
-      this.networkErrors = e.errors
-      console.log(e)
-      let msg = ''
-      if (e && e.errors && e.errors.response) {
-        if (e.errors.response.status == 404) {
-          msg =
-            "Whoops, Seems like you're lost, try to refresh your page, otherwise kindly report us about it so we can fix it."
-        }
-
-        if (e.errors.response.status == 500) {
-          msg =
-            'Whoops, Seems like something went wrong, try to refresh your page, otherwise kindly report us about it so we can fix it.'
-        }
-
-        if (e.errors.response.status == 402) {
-          msg =
-            'Some fields are not completed, please complete them first and try again.'
-        }
-
-        if (e.errors.response.status == 401) {
-          msg =
-            'Whoops, Your session has expired, please refresh your page and try again.'
-        }
-      } else if (e && e.errors && !e.errors.response && e.errors.message) {
-        msg = e.errors.message
+      if (this.resolveErrorMessage) {
+        this.notifi(
+          this.resolveMessage(this.resolveErrorMessage(e.errors), 'error')
+        )
       }
-      this.notifi({
-        title: 'Whoops!',
-        body: msg.length ? msg : 'Something went wrong,  please try again'
-      })
     },
     emit() {
       this.$emit('input', this.model)

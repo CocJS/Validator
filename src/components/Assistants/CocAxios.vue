@@ -15,7 +15,7 @@ export default {
   name: 'CocAxios',
   props: {
     xdata: {
-      type: Object,
+      type: [Object],
       default: null
     },
     method: {
@@ -26,7 +26,7 @@ export default {
       type: String,
       required: true
     },
-    free_origin: {
+    freeOrigin: {
       type: Boolean,
       default: false
     },
@@ -66,7 +66,7 @@ export default {
       type: Array,
       default: null
     },
-    prevent_on_mount: {
+    preventOnMount: {
       type: Boolean,
       default: false
     }
@@ -82,18 +82,18 @@ export default {
       result: null,
       windowStatus: true,
       recursionStopped: false
+      // CancelToken: null,
+      // requestSource: null
     }
   },
   computed: {
     finalUrl() {
-      return this.free_origin
-        ? this.url
-        : 'http://192.168.1.251:4000/' + this.url
+      return this.url
     }
   },
   mounted() {
     this.resultCollector()
-    if (!this.prevent_on_mount) this.retrieve()
+    if (!this.preventOnMount) this.retrieve()
     this.watchMyWindow()
     const vm = this
     // App.$on('axios' , (payloads)=>{
@@ -111,6 +111,8 @@ export default {
   },
   methods: {
     retrieve() {
+      // this.CancelToken = this.$axios.CancelToken
+      // this.requestSource = this.CancelToken.source()
       if (this.precondition != null && this.precondition == false) return
       this.isLoading = true
       this.resultCollector()
@@ -120,6 +122,7 @@ export default {
         url: vm.finalUrl,
         data: vm.xdata,
         params: vm.params,
+        // CancelToken: vm.CancelToken,
         onDownloadProgress: progressEvent => {
           vm.resultCollector()
           vm.$emit('progress', vm.result)
@@ -135,6 +138,8 @@ export default {
           vm.response = res.data
           vm.hasErrors = false
           vm.errors = null
+          // vm.CancelToken = null
+          // vm.requestSource = null
           vm.resultCollector()
           vm.$emit('success', vm.result)
           if (
@@ -162,11 +167,19 @@ export default {
           vm.isLoading = false
           vm.hasErrors = true
           vm.errors = err
+          // vm.CancelToken = null
+          // vm.requestSource = null
           vm.resultCollector()
           vm.$emit('catch', vm.result)
           //if(err.response.status == 401)
           //App.$emit('logoutGlobal');
         })
+    },
+    abort(message = 'Operation canceled by the user.') {
+      // if (!this.requestSource) {
+      //   return
+      // }
+      // this.requestSource.cancel(message)
     },
     resultCollector() {
       this.result = {
@@ -185,7 +198,8 @@ export default {
           recursion_precondition: this.recursion_precondition
         },
         scopeRetrive: this.remoteRetrive,
-        retrieve: this.retrieve
+        retrieve: this.retrieve,
+        abort: this.abort
       }
       this.$emit('input', this.result)
     },

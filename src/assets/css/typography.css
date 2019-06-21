@@ -47,6 +47,10 @@
 .text-basic {
 	text-decoration: none;
 }
+.text-sans-serif {
+	text-decoration: none;
+	font-family: sans-serif;
+}
 .text-bold {
 	font-weight: bold;
 }

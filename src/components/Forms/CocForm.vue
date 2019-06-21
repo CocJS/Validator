@@ -44,9 +44,7 @@ export default {
       items: {}
     }
   },
-  mounted() {
-    console.log(this)
-  },
+  mounted() {},
   methods: {
     getScope(item, index, stepIndex) {
       if (item.type === 'button') {

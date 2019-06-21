@@ -22,14 +22,14 @@
       prevent_on_mount
       @success = "handleRemoteCheck($event)"/>
     <!--Retrievers-->
-    <RadioGroup 
+    <RadioGroup
       v-if = "!multiple"
       :size = "size"
       v-model="input"
       @input = "construct({ remote : true , value : $event })">
       <template v-for = "(feed , index) in feeds.get">
         <Radio
-          v-if = "!button" 
+          v-if = "!button"
           :key = "index"
           :disabled = "hashOption(feed).disabled"
           :value = "hashOption(feed).value"
@@ -39,8 +39,8 @@
           <span>
             <span :class = "[ icon_align , hashOption(feed).icon ]"/>
             <span class = "coc_px_side_padding" >{{ hashOption(feed).label }}</span>
-            <span class="coc_px_side_padding"><small 
-              v-if = "hashOption(feed).comment" 
+            <span class="coc_px_side_padding"><small
+              v-if = "hashOption(feed).comment"
               :class = "[inverseAlign , 'coc_px_side_padding blue-grey-text text-lighten-1']">{{ hashOption(feed).comment }}</small></span>
           </span>
         </Radio>
@@ -54,14 +54,14 @@
           :label = "hashOption(feed).label"/>
       </template>
     </RadioGroup>
-    <CheckboxGroup 
+    <CheckboxGroup
       v-else
       :size = "size"
       v-model="input"
       @input = "construct({ remote : true , value : $event })">
       <template v-for = "(feed , index) in feeds.get">
         <Checkbox
-          v-if = "!button" 
+          v-if = "!button"
           :key = "index"
           :disabled = "hashOption(feed).disabled"
           :value = "hashOption(feed).value"
@@ -71,8 +71,8 @@
           <span>
             <span :class = "[ icon_align , hashOption(feed).icon ]"/>
             <span class = "coc_px_side_padding" >{{ hashOption(feed).label }}</span>
-            <span class="coc_px_side_padding"><small 
-              v-if = "hashOption(feed).comment" 
+            <span class="coc_px_side_padding"><small
+              v-if = "hashOption(feed).comment"
               :class = "[inverseAlign , 'coc_px_side_padding blue-grey-text text-lighten-1']">{{ hashOption(feed).comment }}</small></span>
           </span>
         </Checkbox>
@@ -86,12 +86,12 @@
           :label = "hashOption(feed).label"/>
       </template>
     </CheckboxGroup>
-    <ul 
-      v-if = "!isValid && isFired && !hide_errors" 
+    <ul
+      v-if = "!isValid && isFired && !hide_errors"
       class = "row coc_validation_menu">
-      <li 
-        v-for = "err in validationErrors" 
-        :class = "[ status_classes.errmenu ]" 
+      <li
+        v-for = "err in validationErrors"
+        :class = "[ status_classes.errmenu ]"
         :key = "err">
         <span :class = "errorsBus[err].icon"/>
         <span>{{ errorsBus[err].msg }}</span>
@@ -276,6 +276,23 @@ export default {
     }
   },
   computed: {
+    logger() {
+      return new this.$coc.Logger('Coc Radio')
+    },
+    eventController() {
+      return new this.$coc.FormController({
+        api: $nuxt,
+        type: 'radio',
+        scope: this.scope,
+        model: this.model,
+        component: {
+          placeholder: this.placeholder,
+          domId: this.componentId,
+          type: `Radio > ${this.multiple ? 'radio' : 'Checkbox'}`,
+          val: this.input
+        }
+      })
+    },
     iconClass() {
       let str = 'coc_input_icon '
       let result = { suffix: '', prefix: '' }
@@ -441,7 +458,6 @@ export default {
               update: this.update,
               clear: this.clear,
               validate: this.validate,
-              copy: this.copy,
               meta: this.meta,
               reset: this.reset,
               submit: this.submit,
@@ -465,54 +481,16 @@ export default {
   mounted() {
     const vm = this
     this.initFeeds()
-    //DOM EVENTS
-    new $nuxt.$coc.$(document).ready(function() { // eslint-disable-line
-      vm.realign()
-
-      new $nuxt.$coc.$(vm.jQueryComponentId).keyup(function(e) { // eslint-disable-line
-        if (e.which === 13) {
-          vm.submit()
-          return
-        }
-      })
-    })
     //VUE EVENTS
     //Global Events <<$nuxt API>
-    $nuxt.$on('COCFormController', payloads => {
-      if (!vm.scope) return
-      //Type Checking
-      if (payloads.type !== undefined && payloads.type != 'radio') return
-      //Check Matching
-      if ($nuxt.$coc.IsMatchedArrays(vm.scope, payloads.scope)) { // eslint-disable-line
-        if (vm.model.control[payloads.controller] !== undefined) {
-          vm.model.control[payloads.controller](
-            payloads.credentials,
-            payloads.callback !== 'undefined' &&
-            typeof payloads.callback == 'function'
-              ? payloads.callback
-              : null
-          )
-        } else {
-          $nuxt.$coc.DevWarn({
-            component: "Coc Radio", // eslint-disable-line
-            message:
-              'The controller (' +
-              payloads.controller +
-              ') that you`re trying to access is not exist.'
-          })
-        }
-      } else return
-    })
+    this.eventController.Start()
     //Construct
     this.construct({ remote: false, value: null, validate: false })
     if (this.start_as) this.update(this.start_as)
   },
   methods: {
     realign() {
-      // if(this.multiple) return
-      // if($nuxt.$coc.HasValue(this.input)) // eslint-disable-line
-      // new $nuxt.$coc.$('#'+this.componentId).css({ 'text-align' : $nuxt.$coc.TextAlignWeight(this.input).max , 'font-family' : $nuxt.$coc.FontsAlignment[$nuxt.$coc.TextAlignWeight( // eslint-disable-linethis.input).max] }) // eslint-disable-line
-      //   else new $nuxt.$coc.$('#'+this.componentId).css({ 'text-align' : $nuxt.$coc.LangAlignment  ,  'font-family' : $nuxt.$coc.FontsAlignment[$nuxt.$coc.LangAlignment] }) // eslint-disable-line
+      return true
     },
     construct(options) {
       if (options.validate === undefined || options.validate == true)
@@ -529,27 +507,27 @@ export default {
         if ($nuxt.$coc.HasValue(this.remote_check.url)) // eslint-disable-line
           this.remoteCheckRetriever.retrieve()
         else
-          $nuxt.$coc.DevWarn({
-            component: "Coc Radio", // eslint-disable-line
-            message:
-              "You turned on remote_check option, but you didn't set `url` to the prop."
-          })
+          this.logger.Warn(
+            'You turned on remote_check option, but you did not set *url* to the prop.'
+          )
       //AutoComplete
       if (this.autocomplete && this.autocompleteRetriever.retrieve)
         if ($nuxt.$coc.HasValue(this.autocomplete_from) && this.autocomplete) // eslint-disable-line
           this.autocompleteRetriever.retrieve()
         else
-          $nuxt.$coc.DevWarn({
-            component: "Coc Radio", // eslint-disable-line
-            message:
-              "You turned on autocomplete option, but you didn't set `autocomplete_from` prop."
-          })
+          this.logger.Warn(
+            'You turned on autocomplete option, but you didn not set `autocomplete_from` prop.'
+          )
       //Validations
       if (options.validate === undefined || options.validate == true)
         this.validate()
       this.emit()
     },
     update() {
+      if (!arguments.length) {
+        this.logger.Warn('You cant update without a value')
+        return
+      }
       this.input = arguments[0]
       this.construct({ remote: true, value: arguments[0] })
       //Check and Call the aruguments callback
@@ -569,6 +547,14 @@ export default {
       }
     },
     refill() {
+      if (
+        !this.live ||
+        !this.remoteFeedsRetriever ||
+        !typeof this.remoteFeedsRetriever.retrieve === 'function'
+      ) {
+        this.logger.Warn('You cant refill a non live component.')
+        return
+      }
       this.remoteFeedsRetriever.retrieve()
       if (typeof arguments[arguments.length - 1] == 'function') {
         arguments[arguments.length - 1]()
@@ -603,35 +589,8 @@ export default {
         arguments[arguments.length - 1]()
       }
     },
-    meta() {
-      if (arguments.length == 0) {
-        $nuxt.$coc.DevWarn({
-          component: "Coc Radio", // eslint-disable-line
-          message: 'You need to pass the required meta name.'
-        })
-        return
-      }
-      if (arguments[0] == '*') {
-        $nuxt.$emit('COCFormMeta', {
-          scope: this.scope,
-          meta: arguments[0],
-          credentials: this.model.meta
-        })
-        return
-      }
-      if (this.model.meta[arguments[0]] === undefined) {
-        $nuxt.$coc.DevWarn({
-          component: "Coc Radio", // eslint-disable-line
-          message:
-            'The meta that you are requesting is not available in this CSMA.'
-        })
-        return
-      }
-      $nuxt.$emit('COCFormMeta', {
-        scope: this.scope,
-        meta: arguments[0],
-        credentials: this.model.meta[arguments[0]]
-      })
+    meta(meta) {
+      this.eventController.HandleMeta(meta)
     },
     reset() {
       this.input = this.multiple ? [] : null
@@ -644,12 +603,7 @@ export default {
       }
     },
     submit() {
-      $nuxt.$emit('COCFormController', {
-        scope: this.scope,
-        controller: 'click',
-        credentials: null,
-        type: 'button'
-      })
+      this.eventController.Submit()
       //Check and Call the aruguments callback
       if (typeof arguments[arguments.length - 1] == 'function') {
         arguments[arguments.length - 1]()

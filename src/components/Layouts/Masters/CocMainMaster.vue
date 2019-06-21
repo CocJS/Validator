@@ -1,10 +1,26 @@
 <template>
   <div>
-    <coc-master-nav />
+    <coc-watch-my-window v-model = "windowWatcher"/>
+    <coc-master-nav>
+      <slot
+        slot = "left"
+        name = "nav-left"/>
+      <slot
+        slot = "middle"
+        name = "nav-middle"/>
+      <slot
+        slot = "right"
+        name = "nav-right"/>
+    </coc-master-nav>
     <main>
-      <slot/>  		
+      <slot/>
+      <coc-layout-docker 
+        :window-watcher = "windowWatcher" 
+        v-bind = "docker"/>
     </main>
-    <coc-master-footer />
+    <coc-master-footer>
+      <slot name = "footer"/>
+    </coc-master-footer>
   </div>
 </template>
 
@@ -17,8 +33,16 @@ export default {
     CocMasterNav,
     CocMasterFooter
   },
+  props: {
+    docker: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
-    return {}
+    return {
+      windowWatcher: null
+    }
   }
 }
 </script>
