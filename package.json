@@ -2,7 +2,7 @@
   "name": "coc-validator",
   "version": "4.0.2",
   "description": "coc engine based validator",
-  "main": "dist/coc-validator.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --config webpack.config.js",
