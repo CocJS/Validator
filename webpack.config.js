@@ -7,6 +7,7 @@ const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 // const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 module.exports = {
   entry: './src/index.js',
+  target: 'node',
   mode: 'production',
   output: {
     path: path.resolve(__dirname, 'dist'),
