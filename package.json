@@ -1,8 +1,8 @@
 {
-  "name": "coc-nuxt-iview",
-  "version": "4.0.0-beta.0",
-  "description": "coc engine based implementation for nuxt-iview applications",
-  "main": "dist/coc-nuxt-iview.js",
+  "name": "coc-validator",
+  "version": "1.0.0",
+  "description": "coc engine based validator",
+  "main": "dist/coc-validator.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --config webpack.config.js",
@@ -11,10 +11,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CocJS/Nuxt-iView-plugin.git"
+    "url": "git+https://github.com/CocJS/Validator.git"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.3.3",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.21"
@@ -22,15 +21,17 @@
   "keywords": [
     "coc",
     "cocjs",
-    "nuxt",
-    "iview"
+    "validate",
+    "validator",
+    "error",
+    "error delivery"
   ],
   "author": "Amr",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CocJS/Nuxt-iView-plugin/issues"
+    "url": "https://github.com/CocJS/Validator/issues"
   },
-  "homepage": "https://github.com/CocJS/Nuxt-iView-plugin#readme",
+  "homepage": "https://github.com/CocJS/Validator#readme",
   "devDependencies": {
     "@babel/core": "^7.1.6",
     "@babel/preset-env": "^7.1.6",
