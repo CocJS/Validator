@@ -38,10 +38,13 @@
     "@babel/preset-env": "^7.1.6",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
+    "babel-polyfill": "^6.0.16",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "source-map-loader": "^0.2.4",
+    "terser-webpack-plugin": "^2.0.1",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"

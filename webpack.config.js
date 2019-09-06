@@ -1,10 +1,7 @@
 const pkg = require('./package.json')
 const webpack = require('webpack')
 const path = require('path')
-// const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-// const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+// const TerserPlugin = require('terser-webpack-plugin')
 module.exports = {
   entry: './src/index.js',
   target: 'node',
@@ -20,12 +17,7 @@ module.exports = {
 },
 optimization: {
     minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: true // set to true if you want JS source maps
-      }),
-      // new OptimizeCSSAssetsPlugin({})
+      // new TerserPlugin(),
     ]
   },
   module: {
@@ -35,11 +27,22 @@ optimization: {
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
-            presets: [['es2015', { module: false }], 'stage-0']
+            presets: [['es2015', { module: true }], 'stage-0']
           }
       },
+      // {
+      //   test: /\.js$/,
+      //   use: ["source-map-loader"],
+      //   enforce: "pre"
+      // }
     ]
   },
   plugins: [
+  // new TerserPlugin({
+  //   parallel: true,
+  //   terserOptions: {
+  //     ecma: 6,
+  //   },
+  // }),
   ],
 }
