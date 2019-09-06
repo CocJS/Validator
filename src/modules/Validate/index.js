@@ -35,6 +35,7 @@ export default class {
       'DateBetween',
       // Logical Validations
       'MatchsRegex',
+      'MongooseId',
       'MinLength',
       'MaxLength',
       'LengthBetween',
@@ -410,6 +411,9 @@ export default class {
   }
 
   // Matching << Number >>
+  MongooseId() {
+    return this.MatchsRegex(/^[0-9a-fA-F]{24}$/)
+  }
   MatchsRegex(regex = /foo/) {
     return this.Val.match(regex) != null
   }

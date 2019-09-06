@@ -61,6 +61,9 @@ export default {
       MatchsRegex: {
         message: 'This field must follow the correct formula'
       },
+      MongooseId: {
+        message: 'This field should be a mongoose id'
+      },
       MinLength: {
         message: 'This field must be greater than |*args*| characters'
       },
